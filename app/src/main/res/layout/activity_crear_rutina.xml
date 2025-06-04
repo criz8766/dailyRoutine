@@ -162,6 +162,22 @@
                         android:visibility="gone"
                         app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
                         app:drawableTint="@color/white" />
+
+                    <EditText
+                        android:id="@+id/edittext_texto_recordatorio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="8dp"
+                        android:hint="Mensaje de recordatorio (opcional)"
+                        android:textColor="@color/white"
+                        android:textColorHint="#E0E0E0"
+                        android:backgroundTint="@color/white"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLines="3"
+                        android:minLines="1"
+                        android:textSize="16sp"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
 

@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-
+// No se importa com.google.android.material.chip.Chip si se revierte a TextView
 import java.util.ArrayList;
 
 public class adaptadorRutinas extends BaseAdapter {
@@ -35,7 +35,7 @@ public class adaptadorRutinas extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return listaRutinas.get(position).getId();
     }
 
     @Override
@@ -49,44 +49,37 @@ public class adaptadorRutinas extends BaseAdapter {
             holder = new ViewHolder();
             holder.nombreRutinaTV = view.findViewById(R.id.nombreRutina);
             holder.fechaTV = view.findViewById(R.id.fecha);
-            holder.categoriaTV = view.findViewById(R.id.categoriaRutina);
+            holder.categoriaTV = view.findViewById(R.id.categoriaRutina); // TextView para categoría
             holder.editarButton = view.findViewById(R.id.editar);
-            holder.cardViewItem = (CardView) view;
+            holder.itemLayout = view.findViewById(R.id.layout_info_rutina); // El LinearLayout clickeable
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        final Rutina rutina = (Rutina) getItem(position);
+        final Rutina rutina = listaRutinas.get(position);
 
         holder.nombreRutinaTV.setText(rutina.getNombre());
         holder.fechaTV.setText(rutina.getFecha());
 
-        // Mostrar la categoría
         if (rutina.getCategoria() != null && !rutina.getCategoria().isEmpty()) {
             holder.categoriaTV.setText("Categoría: " + rutina.getCategoria());
             holder.categoriaTV.setVisibility(View.VISIBLE);
         } else {
-            holder.categoriaTV.setText("Categoría: Ninguna");
+            holder.categoriaTV.setText("Categoría: Ninguna"); // O View.GONE
+            holder.categoriaTV.setVisibility(View.VISIBLE); // Asegúrate de que sea visible si muestras "Ninguna"
         }
 
-
-        holder.editarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, CrearRutina.class);
-                intent.putExtra(EXTRA_POSICION_RUTINA, position);
-                context.startActivity(intent);
-            }
+        holder.editarButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, CrearRutina.class);
+            intent.putExtra(EXTRA_POSICION_RUTINA, position);
+            context.startActivity(intent);
         });
 
-        holder.cardViewItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DetalleRutinaActivity.class);
-                intent.putExtra(DetalleRutinaActivity.EXTRA_POSICION_RUTINA_DETALLE, position);
-                context.startActivity(intent);
-            }
+        holder.itemLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetalleRutinaActivity.class);
+            intent.putExtra(DetalleRutinaActivity.EXTRA_POSICION_RUTINA_DETALLE, position);
+            context.startActivity(intent);
         });
 
         return view;
@@ -95,8 +88,8 @@ public class adaptadorRutinas extends BaseAdapter {
     private static class ViewHolder {
         TextView nombreRutinaTV;
         TextView fechaTV;
-        TextView categoriaTV;
+        TextView categoriaTV; // Revertido a TextView
         ImageButton editarButton;
-        CardView cardViewItem;
+        LinearLayout itemLayout;
     }
 }

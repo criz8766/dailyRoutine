@@ -16,10 +16,17 @@ public class AdaptadorActividades extends BaseAdapter {
 
     private Context context;
     private ArrayList<Actividad> listaActividades;
+    private OnActividadCheckedChangeListener listener; // Listener
 
-    public AdaptadorActividades(Context context, ArrayList<Actividad> listaActividades) {
+    // Interfaz para comunicar cambios en el CheckBox
+    public interface OnActividadCheckedChangeListener {
+        void onActividadCheckedChanged(int position, boolean isChecked);
+    }
+
+    public AdaptadorActividades(Context context, ArrayList<Actividad> listaActividades, OnActividadCheckedChangeListener listener) {
         this.context = context;
         this.listaActividades = listaActividades;
+        this.listener = listener; // Asignar listener
     }
 
     @Override
@@ -61,6 +68,7 @@ public class AdaptadorActividades extends BaseAdapter {
             holder.nombreActividadTV.setPaintFlags(holder.nombreActividadTV.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
+        // Importante: Quitar el listener ANTES de llamar a setChecked() para evitar llamadas recursivas o inesperadas.
         holder.completadaCB.setOnCheckedChangeListener(null);
         holder.completadaCB.setChecked(actividadActual.isCompletada());
 
@@ -68,10 +76,15 @@ public class AdaptadorActividades extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 actividadActual.setCompletada(isChecked);
+                // Aplicar/quitar tachado inmediatamente
                 if (isChecked) {
                     holder.nombreActividadTV.setPaintFlags(holder.nombreActividadTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 } else {
                     holder.nombreActividadTV.setPaintFlags(holder.nombreActividadTV.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+                // Notificar a la actividad contenedora sobre el cambio
+                if (listener != null) {
+                    listener.onActividadCheckedChanged(position, isChecked);
                 }
             }
         });

@@ -17,6 +17,7 @@ public class MenuPrincipal extends AppCompatActivity {
     static ArrayList<Rutina> listaRutinas;
     private adaptadorRutinas adaptadorRutinasObj;
     private String nombreUsuarioActual;
+    // No hay Toolbar aquí ni métodos de menú si no los tenías antes del Paso 12
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MenuPrincipal extends AppCompatActivity {
         ImageButton botonAnadirRutina = findViewById(R.id.calendario);
         ImageButton botonHistorial = findViewById(R.id.botonHistorial);
         ImageButton botonPerfil = findViewById(R.id.botonPerfil);
+        ImageButton botonRutinasFamosas = findViewById(R.id.botonRutinasFamosas);
 
         botonAnadirRutina.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,29 +65,32 @@ public class MenuPrincipal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        botonRutinasFamosas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuPrincipal.this, RutinasFamosasActivity.class));
+            }
+        });
     }
 
     public void cargarInformacionInicialSiEsNecesario() {
         if (listaRutinas.isEmpty()) {
-            // Rutina 1 con recordatorio
             ArrayList<Actividad> acts1 = new ArrayList<>();
             acts1.add(new Actividad("Correr 30 min", true));
             acts1.add(new Actividad("Estiramientos", false));
-            // Usamos el constructor que incluye todos los campos de recordatorio. El ID se genera dentro.
-            Rutina r1 = new Rutina(0,"Entrenamiento Mañana", "29/05/2025", acts1, "Ejercicio", true, "07:00");
+            Rutina r1 = new Rutina(0, "Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio", true, "07:00", "¡Hora de empezar el día con energía!");
             listaRutinas.add(r1);
 
-            // Rutina 2 sin recordatorio
             ArrayList<Actividad> acts2 = new ArrayList<>();
             acts2.add(new Actividad("Leer capítulo Android", true));
-            Rutina r2 = new Rutina(0,"Estudio Tarde", "30/05/2025", acts2, "Educación", false, ""); // Hora vacía o nula si no hay recordatorio
+            Rutina r2 = new Rutina(0, "Estudio Tarde", "04/06/2025", acts2, "Educación", false, "", "");
             listaRutinas.add(r2);
 
-            // Rutina 3 con recordatorio
             ArrayList<Actividad> acts3 = new ArrayList<>();
             acts3.add(new Actividad("Lavar platos"));
             acts3.add(new Actividad("Ordenar habitación", true));
-            Rutina r3 = new Rutina(0,"Tareas Hogar", "30/05/2025", acts3, "Hogar", true, "18:30");
+            Rutina r3 = new Rutina(0, "Tareas Hogar", "04/06/2025", acts3, "Hogar", true, "18:30", "");
             listaRutinas.add(r3);
         }
     }

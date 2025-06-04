@@ -1,15 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.DailyRoutine" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Mytheme" parent="Theme.Material3.DayNight">
-        <item name="android:statusBarColor">@color/rojo</item>
+    <style name="Mytheme" parent="Theme.Material3.DayNight"> <item name="android:statusBarColor">@color/rojo</item>
         <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
-
-    </style>
+        <item name="colorPrimary">@color/rojo</item>
+        <item name="colorSecondary">@color/verde</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/white</item> </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
         <item name="background">@color/rojo</item>
@@ -17,11 +15,33 @@
     </style>
 
     <style name="ActionBar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textColor">@color/white</item> <!-- 👈 o el color que quieras -->
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Theme.DailyRoutine.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/rojo</item> <item name="colorPrimaryVariant">@color/rojo</item> <item name="colorOnPrimary">@color/white</item> </style>
-
     <style name="Theme.DailyRoutine" parent="Base.Theme.DailyRoutine" />
+
+    <style name="CampoEntradaLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="LabelCampoEntrada">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="InputCampoEntrada">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">#E0E0E0</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>
