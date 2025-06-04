@@ -1,3 +1,4 @@
+// app/src/main/java/cl/example/dailyroutine/MainActivity.java
 package cl.example.dailyroutine;
 
 import android.content.Context;
@@ -11,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull; // Asegúrate de importar NonNull
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -32,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivityGoogleAuth";
     private Context context;
-    //private EditText usuarioCapturado;
-    //private EditText claveCapturada;
-    //private Button botonIniciarSesion;
     private SignInButton botonGoogleSignIn;
 
     private FirebaseAuth mAuth;
@@ -47,17 +45,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
-        //usuarioCapturado = findViewById(R.id.imputUsuario);
-        //claveCapturada = findViewById(R.id.imputClave);
-        //botonIniciarSesion = findViewById(R.id.botonIniciarSesion);
         botonGoogleSignIn = findViewById(R.id.botonGoogleSignIn);
 
         // Inicializar Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
         // Configurar Google Sign-In
-        // R.string.default_web_client_id es generado por el plugin google-services
-        // si google-services.json está correctamente configurado y el SHA-1 está en Firebase.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -85,28 +78,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.w(TAG, "Google Sign-In Activity cancelada o con error. Código de resultado: " + result.getResultCode());
-                        // Opcional: Mostrar un Toast solo si no fue una cancelación del usuario
-                        // if (result.getResultCode() != RESULT_CANCELED) {
-                        //    Toast.makeText(context, "Inicio de sesión con Google no completado.", Toast.LENGTH_SHORT).show();
-                        // }
                     }
                 }
         );
-
-        //botonIniciarSesion.setOnClickListener(new View.OnClickListener() {
-            //@Override
-            //public void onClick(View v) {
-                //String usuarioIn = usuarioCapturado.getText().toString();
-                //String claveIn = claveCapturada.getText().toString();
-                //if (iniciarSesionSimple(usuarioIn, claveIn)) {
-                    //navegarAMenuPrincipal(usuarioIn);
-                //} else {
-                    //Toast.makeText(context, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                //}
-                //usuarioCapturado.setText("");
-                //claveCapturada.setText("");
-            //}
-        //});
 
         botonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,12 +96,19 @@ public class MainActivity extends AppCompatActivity {
         // Comprobar si el usuario ya inició sesión con Firebase
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            // Verificar si la actividad se lanzó después de un cierre de sesión
+            // Esto es crucial para evitar que el usuario "logueado" vuelva automáticamente
+            // justo después de cerrar sesión desde MenuPrincipal.
+            // Para el cierre de sesión, MenuPrincipal ya usa FLAG_ACTIVITY_CLEAR_TOP,
+            // pero si la app se "mató" y se reinició con el usuario logueado, esto lo detectará.
             Log.d(TAG, "Usuario ya logueado con Firebase: " + (currentUser.getEmail() != null ? currentUser.getEmail() : currentUser.getUid()));
             String nombreUsuario = currentUser.getDisplayName();
             if (nombreUsuario == null || nombreUsuario.isEmpty()) {
                 nombreUsuario = currentUser.getEmail() != null ? currentUser.getEmail() : "Usuario";
             }
             navegarAMenuPrincipal(nombreUsuario);
+        } else {
+            Log.d(TAG, "No hay usuario logueado en Firebase.");
         }
     }
 
@@ -160,17 +141,11 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public boolean iniciarSesionSimple(String usuarioIngresado, String claveIngresada) {
-        String adminUser = "admin";
-        String adminPassword = "1234";
-        return usuarioIngresado.equalsIgnoreCase(adminUser) && claveIngresada.equalsIgnoreCase(adminPassword);
-    }
-
     private void navegarAMenuPrincipal(String nombreUsuario) {
         Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
         intent.putExtra("usuario", nombreUsuario);
         startActivity(intent);
-        finish(); // Finaliza MainActivity para que el usuario no pueda volver con el botón "atrás"
+        finish();
         Toast.makeText(MainActivity.this, "Bienvenido " + nombreUsuario, Toast.LENGTH_SHORT).show();
     }
 }

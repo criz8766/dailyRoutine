@@ -1,17 +1,20 @@
+// app/src/main/java/cl/example/dailyroutine/DetalleRutinaActivity.java
 package cl.example.dailyroutine;
 
 import android.os.Bundle;
-import android.util.Log; // Importar Log
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View; // Importar View
+import android.view.View;
 import android.widget.Button;
-// import android.widget.CheckBox; // No se usa directamente aquí
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson; // Importar Gson
+import android.content.SharedPreferences; // Importar SharedPreferences
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,10 +26,10 @@ public class DetalleRutinaActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView tvNombreRutinaDetalle, tvFechaRutinaDetalle, tvCategoriaRutinaDetalle;
     private ListView lvActividadesDetalle;
-    private Button btnMarcarTodasCompletadas, btnDesmarcarTodas; // Botones añadidos
+    private Button btnMarcarTodasCompletadas, btnDesmarcarTodas;
 
     private Rutina rutinaActual;
-    private int posicionRutinaActual; // No se usa directamente, pero bueno tenerla si es necesaria
+    private int posicionRutinaActual;
     private AdaptadorActividades adaptadorActividades;
 
     public static final String EXTRA_POSICION_RUTINA_DETALLE = "cl.example.dailyroutine.POSICION_RUTINA_DETALLE";
@@ -34,7 +37,7 @@ public class DetalleRutinaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalle_rutina); // Asumiendo que este layout ya tiene los botones
+        setContentView(R.layout.activity_detalle_rutina);
 
         toolbar = findViewById(R.id.toolbar_detalle_rutina);
         setSupportActionBar(toolbar);
@@ -45,15 +48,15 @@ public class DetalleRutinaActivity extends AppCompatActivity {
 
         tvNombreRutinaDetalle = findViewById(R.id.textview_nombre_rutina_detalle);
         tvFechaRutinaDetalle = findViewById(R.id.textview_fecha_rutina_detalle);
-        tvCategoriaRutinaDetalle = findViewById(R.id.textview_categoria_rutina_detalle); // Asegúrate que este ID exista
+        tvCategoriaRutinaDetalle = findViewById(R.id.textview_categoria_rutina_detalle);
         lvActividadesDetalle = findViewById(R.id.listview_actividades_detalle);
-        btnMarcarTodasCompletadas = findViewById(R.id.boton_marcar_todas_completadas); // Asegúrate que este ID exista
-        btnDesmarcarTodas = findViewById(R.id.boton_desmarcar_todas); // Asegúrate que este ID exista
+        btnMarcarTodasCompletadas = findViewById(R.id.boton_marcar_todas_completadas);
+        btnDesmarcarTodas = findViewById(R.id.boton_desmarcar_todas);
 
         posicionRutinaActual = getIntent().getIntExtra(EXTRA_POSICION_RUTINA_DETALLE, -1);
 
-        if (posicionRutinaActual != -1 && MenuPrincipal.listaRutinas != null && posicionRutinaActual < MenuPrincipal.listaRutinas.size()) { //
-            rutinaActual = MenuPrincipal.listaRutinas.get(posicionRutinaActual); //
+        if (posicionRutinaActual != -1 && MenuPrincipal.listaRutinas != null && posicionRutinaActual < MenuPrincipal.listaRutinas.size()) {
+            rutinaActual = MenuPrincipal.listaRutinas.get(posicionRutinaActual);
         } else {
             Toast.makeText(this, "Error al cargar la rutina.", Toast.LENGTH_SHORT).show();
             finish();
@@ -62,17 +65,17 @@ public class DetalleRutinaActivity extends AppCompatActivity {
 
         cargarDatosRutina();
 
-        // Inicializar lista de actividades si es null para evitar NullPointerException
-        if (rutinaActual.getActividades() == null) { //
-            rutinaActual.setActividades(new ArrayList<>()); //
+        if (rutinaActual.getActividades() == null) {
+            rutinaActual.setActividades(new ArrayList<>());
         }
 
         adaptadorActividades = new AdaptadorActividades(this, rutinaActual.getActividades(), new AdaptadorActividades.OnActividadCheckedChangeListener() {
             @Override
             public void onActividadCheckedChanged(int position, boolean isChecked) {
                 // El estado de la actividad ya se actualiza dentro del AdaptadorActividades
-                // Ahora, verificamos si TODAS las actividades de la rutina están completadas
-                if (rutinaActual.todasActividadesCompletadas()) { //
+                // Después de cada cambio, guarda las rutinas
+                guardarRutinasLocales(); // Llama al método para guardar
+                if (rutinaActual.todasActividadesCompletadas()) {
                     verificarYActualizarRacha();
                 }
             }
@@ -82,26 +85,26 @@ public class DetalleRutinaActivity extends AppCompatActivity {
 
         btnMarcarTodasCompletadas.setOnClickListener(v -> {
             marcarTodasLasActividades(true);
-            // Después de marcar todas, verificamos si la rutina está completa y actualizamos racha
-            if (rutinaActual.todasActividadesCompletadas()) { //
+            guardarRutinasLocales(); // Guarda después de marcar todas
+            if (rutinaActual.todasActividadesCompletadas()) {
                 verificarYActualizarRacha();
             }
         });
 
         btnDesmarcarTodas.setOnClickListener(v -> {
             marcarTodasLasActividades(false);
-            // No se actualiza racha al desmarcar todas, ya que la rutina ya no estaría "completada hoy"
+            guardarRutinasLocales(); // Guarda después de desmarcar todas
         });
     }
 
     private void cargarDatosRutina() {
         if (rutinaActual != null) {
-            tvNombreRutinaDetalle.setText(rutinaActual.getNombre()); //
-            tvFechaRutinaDetalle.setText("Fecha: " + rutinaActual.getFecha()); //
+            tvNombreRutinaDetalle.setText(rutinaActual.getNombre());
+            tvFechaRutinaDetalle.setText("Fecha: " + rutinaActual.getFecha());
 
-            if (tvCategoriaRutinaDetalle != null) { // Comprobar si el TextView existe
-                if (rutinaActual.getCategoria() != null && !rutinaActual.getCategoria().isEmpty()) { //
-                    tvCategoriaRutinaDetalle.setText("Categoría: " + rutinaActual.getCategoria()); //
+            if (tvCategoriaRutinaDetalle != null) {
+                if (rutinaActual.getCategoria() != null && !rutinaActual.getCategoria().isEmpty()) {
+                    tvCategoriaRutinaDetalle.setText("Categoría: " + rutinaActual.getCategoria());
                     tvCategoriaRutinaDetalle.setVisibility(View.VISIBLE);
                 } else {
                     tvCategoriaRutinaDetalle.setVisibility(View.GONE);
@@ -109,15 +112,15 @@ public class DetalleRutinaActivity extends AppCompatActivity {
             }
 
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(rutinaActual.getNombre()); //
+                getSupportActionBar().setTitle(rutinaActual.getNombre());
             }
         }
     }
 
     private void marcarTodasLasActividades(boolean completadas) {
-        if (rutinaActual != null && rutinaActual.getActividades() != null) { //
-            for (Actividad act : rutinaActual.getActividades()) { //
-                act.setCompletada(completadas); //
+        if (rutinaActual != null && rutinaActual.getActividades() != null) {
+            for (Actividad act : rutinaActual.getActividades()) {
+                act.setCompletada(completadas);
             }
             if (adaptadorActividades != null) {
                 adaptadorActividades.notifyDataSetChanged();
@@ -134,23 +137,22 @@ public class DetalleRutinaActivity extends AppCompatActivity {
         String fechaRutinaParaComparar = "";
 
         try {
-            Date fechaRutinaDate = sdfInput.parse(rutinaActual.getFecha()); //
+            Date fechaRutinaDate = sdfInput.parse(rutinaActual.getFecha());
             if (fechaRutinaDate != null) {
                 fechaRutinaParaComparar = sdfCompare.format(fechaRutinaDate);
             }
         } catch (Exception e) {
-            Log.e("DetalleRutinaActivity", "Error al parsear fecha de rutina para racha: " + rutinaActual.getFecha(), e); //
-            return; // No continuar si la fecha de la rutina es inválida
+            Log.e("DetalleRutinaActivity", "Error al parsear fecha de rutina para racha: " + rutinaActual.getFecha(), e);
+            return;
         }
 
         if (fechaRutinaParaComparar.equals(fechaHoyParaComparar)) {
-            Log.d("DetalleRutinaActivity", "Rutina (" + rutinaActual.getNombre() + ") completada hoy (" + fechaHoyParaComparar + "). Llamando a GestorDeRachas."); //
+            Log.d("DetalleRutinaActivity", "Rutina (" + rutinaActual.getNombre() + ") completada hoy (" + fechaHoyParaComparar + "). Llamando a GestorDeRachas.");
             GestorDeRachas.rutinaCompletadaHoy(this);
         } else {
-            Log.d("DetalleRutinaActivity", "Rutina (" + rutinaActual.getNombre() + ") completada, pero no es de hoy (Rutina: " + rutinaActual.getFecha() + ", Hoy: " + sdfInput.format(new Date()) + "). No se actualiza racha."); //
+            Log.d("DetalleRutinaActivity", "Rutina (" + rutinaActual.getNombre() + ") completada, pero no es de hoy (Rutina: " + rutinaActual.getFecha() + ", Hoy: " + sdfInput.format(new Date()) + "). No se actualiza racha.");
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -161,6 +163,15 @@ public class DetalleRutinaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // No es necesario onPause para guardar, ya que los cambios en rutinaActual
-    // (que es un objeto de MenuPrincipal.listaRutinas) son directos.
+    // Método para guardar las rutinas. Llama a un método estático o público en MenuPrincipal
+    private void guardarRutinasLocales() {
+        // Accede a SharedPreferences y Gson directamente para guardar la lista estática
+        SharedPreferences sharedPreferences = getSharedPreferences(MenuPrincipal.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(MenuPrincipal.listaRutinas); // Accede a la lista estática
+        editor.putString(MenuPrincipal.KEY_RUTINAS, json);
+        editor.apply();
+        Log.d("DetalleRutinaActivity", "Rutinas guardadas localmente desde DetalleRutinaActivity.");
+    }
 }
