@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo"
+    tools:context=".MenuPrincipal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/botonPerfil"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/perfil"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Ver Perfil"
+                android:scaleType="fitCenter"
+                android:padding="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewTituloMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mis Rutinas"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageButton
+                android:id="@+id/botonHistorial"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/lupa"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Ver Historial"
+                android:scaleType="fitCenter"
+                android:padding="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <ImageButton
+                android:id="@+id/calendario"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/calendario"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Añadir Rutina"
+                android:scaleType="fitCenter"
+                android:padding="8dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#80FFFFFF"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+        <ListView
+            android:id="@+id/listaRutinas"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:clipToPadding="false"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

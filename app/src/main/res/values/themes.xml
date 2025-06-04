@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.DailyRoutine" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Mytheme" parent="Theme.Material3.DayNight">
+        <item name="android:statusBarColor">@color/rojo</item>
+        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="background">@color/rojo</item>
+        <item name="titleTextStyle">@style/ActionBar.TitleText</item>
+    </style>
+
+    <style name="ActionBar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/white</item> <!-- 👈 o el color que quieras -->
+    </style>
+
+    <style name="Theme.DailyRoutine.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/rojo</item> <item name="colorPrimaryVariant">@color/rojo</item> <item name="colorOnPrimary">@color/white</item> </style>
+
+    <style name="Theme.DailyRoutine" parent="Base.Theme.DailyRoutine" />
+</resources>

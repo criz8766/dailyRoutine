@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="4dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    app:cardBackgroundColor="#E6FFFFFF"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nombreRutina"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre Actividad"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="dd/MM/yyyy"
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/categoriaRutina" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Categoría: Ninguna"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:textColor="#666666"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/editar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/circulo"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Editar Rutina"
+            android:scaleType="fitCenter"
+            android:padding="8dp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
