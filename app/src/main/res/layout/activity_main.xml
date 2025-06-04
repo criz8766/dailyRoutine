@@ -43,6 +43,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.35"/>
 
+    <!--
     <TextView
         android:id="@+id/labelUsuario"
         android:layout_width="wrap_content"
@@ -123,12 +124,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
+    -->
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/botonGoogleSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/textViewO"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_inputs_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"

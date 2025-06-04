@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List; // Importar List si aún no está
+import java.util.Arrays; // Importar Arrays si se necesita para listas iniciales
+import java.util.Calendar; // Importar Calendar para las constantes de días
 
 public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener { // Implementar listener
 
@@ -38,14 +41,21 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
             nombreUsuarioActual = "Usuario";
         }
 
-        if (listaRutinas == null) {
+        // Aquí podríamos cargar las rutinas desde almacenamiento persistente en el futuro
+        // Por ahora, si la lista es null o vacía, cargamos las iniciales.
+        if (listaRutinas == null || listaRutinas.isEmpty()) { // Añadida verificación de isEmpty
             listaRutinas = new ArrayList<>();
             cargarInformacionInicialSiEsNecesario();
         }
 
+
         listView = findViewById(R.id.listaRutinas);
+        // Podríamos necesitar filtrar las rutinas aquí para mostrar solo las del día actual
+        // Esto dependerá de cómo queramos presentar las rutinas en la pantalla principal
+        // Por ahora, se muestran todas como antes.
         adaptadorRutinasObj = new adaptadorRutinas(listaRutinas, MenuPrincipal.this);
         listView.setAdapter(adaptadorRutinasObj);
+
 
         fabAnadirRutina = findViewById(R.id.fabAnadirRutina);
         botonOpcionesMenu = findViewById(R.id.botonOpcionesMenu);
@@ -69,12 +79,6 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
         PopupMenu popup = new PopupMenu(this, view);
         popup.setOnMenuItemClickListener(this); // 'this' implementa OnMenuItemClickListener
         popup.inflate(R.menu.menu_principal_opciones);
-        // Intenta forzar la visualización de iconos si es necesario (para versiones más antiguas o temas específicos)
-        // Esto a veces es necesario para que los iconos se muestren en PopupMenu.
-        // No hay una forma estándar directa y garantizada en todos los casos vía XML para PopupMenu,
-        // pero el inflador debería respetar los 'android:icon' del <item>.
-        // Si los iconos no aparecen, podrías necesitar una solución más programática o un menú personalizado.
-        // Por ahora, confiamos en que el inflador los mostrará.
         popup.show();
     }
 
@@ -98,22 +102,28 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
     }
 
     public void cargarInformacionInicialSiEsNecesario() {
-        if (listaRutinas.isEmpty()) {
+        // Solo cargar si la lista está realmente vacía
+        if (listaRutinas == null || listaRutinas.isEmpty()) {
+            listaRutinas = new ArrayList<>(); // Asegurarse de que esté inicializada
+
             ArrayList<Actividad> acts1 = new ArrayList<>();
             acts1.add(new Actividad("Correr 30 min", true));
             acts1.add(new Actividad("Estiramientos", false));
-            Rutina r1 = new Rutina(0, "Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio", true, "07:00", "¡Hora de empezar el día con energía!");
+            // Añadido List<Integer> como noveno argumento
+            Rutina r1 = new Rutina(0, "Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio", true, "07:00", "¡Hora de empezar el día con energía!", Arrays.asList(Calendar.MONDAY, Calendar.WEDNESDAY, Calendar.FRIDAY)); // Ejemplo: L, X, V
             listaRutinas.add(r1);
 
             ArrayList<Actividad> acts2 = new ArrayList<>();
             acts2.add(new Actividad("Leer capítulo Android", true));
-            Rutina r2 = new Rutina(0, "Estudio Tarde", "04/06/2025", acts2, "Educación", false, "", "");
+            // Añadido List<Integer> como noveno argumento
+            Rutina r2 = new Rutina(0, "Estudio Tarde", "04/06/2025", acts2, "Educación", false, "", "", new ArrayList<Integer>()); // Ejemplo: Sin días específicos
             listaRutinas.add(r2);
 
             ArrayList<Actividad> acts3 = new ArrayList<>();
             acts3.add(new Actividad("Lavar platos"));
             acts3.add(new Actividad("Ordenar habitación", true));
-            Rutina r3 = new Rutina(0, "Tareas Hogar", "04/06/2025", acts3, "Hogar", true, "18:30", "");
+            // Añadido List<Integer> como noveno argumento
+            Rutina r3 = new Rutina(0, "Tareas Hogar", "04/06/2025", acts3, "Hogar", true, "18:30", "", Arrays.asList(Calendar.SATURDAY, Calendar.SUNDAY)); // Ejemplo: S, D
             listaRutinas.add(r3);
         }
     }
@@ -121,6 +131,9 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
     @Override
     protected void onResume() {
         super.onResume();
+        // Cuando se regresa a esta actividad, refrescar la lista.
+        // En el futuro, aquí también podrías filtrar las rutinas del día actual
+        // antes de pasar la lista al adaptador.
         if (adaptadorRutinasObj != null) {
             adaptadorRutinasObj.notifyDataSetChanged();
         }

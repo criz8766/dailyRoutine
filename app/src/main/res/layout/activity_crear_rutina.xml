@@ -178,6 +178,43 @@
                         android:scrollbars="vertical"
                         android:padding="12dp"/>
                 </LinearLayout>
+
+                <!-- Nuevo LinearLayout para seleccionar días de la semana -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="24dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Programar días:"
+                        android:textColor="@color/pomodoro_text_medium"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/layout_dias_semana"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_horizontal">
+
+                        <CheckBox android:id="@+id/checkbox_lunes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="L" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_martes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_miercoles" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_jueves" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="J" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_viernes" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="V" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_sabado" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark" android:layout_marginEnd="4dp"/>
+                        <CheckBox android:id="@+id/checkbox_domingo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="D" android:buttonTint="@color/pomodoro_red" android:textColor="@color/pomodoro_text_dark"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+                <!-- Fin del LinearLayout para seleccionar días de la semana -->
+
             </LinearLayout>
         </ScrollView>
 

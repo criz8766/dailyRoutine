@@ -20,4 +20,10 @@
         android:icon="@android:drawable/ic_menu_compass"
         app:iconTint="@color/pomodoro_text_dark" />
 
+    <item
+        android:id="@+id/menu_opcion_cerrar_sesion"
+        android:title="Cerrar Sesión"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconTint="@color/pomodoro_text_dark" />
+
 </menu>

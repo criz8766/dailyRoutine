@@ -32,18 +32,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List; // Importar List
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class CrearRutina extends AppCompatActivity {
 
     private EditText campoNombre;
-    private EditText campoFecha;
+    private EditText campoFecha; // Mantendremos este campo por ahora, aunque la programación se base en días
     private EditText campoCategoria;
     private EditText campoActividades;
     private CheckBox checkboxRecordatorio;
     private TextView textViewHoraRecordatorio;
-    private EditText editTextTextoRecordatorio; // Nuevo EditText
+    private EditText editTextTextoRecordatorio;
+
+    // <-- Declaración de los CheckBoxes de los días de la semana
+    private CheckBox checkboxLunes;
+    private CheckBox checkboxMartes;
+    private CheckBox checkboxMiercoles;
+    private CheckBox checkboxJueves;
+    private CheckBox checkboxViernes;
+    private CheckBox checkboxSabado;
+    private CheckBox checkboxDomingo;
+    // -->
 
     private Button botonGuardarCrearRutina;
     private Button botonEliminarRutina;
@@ -62,7 +73,6 @@ public class CrearRutina extends AppCompatActivity {
                     Toast.makeText(this, "Permiso de notificaciones concedido.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Permiso denegado. Los recordatorios podrían no funcionar.", Toast.LENGTH_LONG).show();
-                    // Desmarcar el checkbox si el permiso es crucial y fue denegado
                     if (checkboxRecordatorio.isChecked()) {
                         checkboxRecordatorio.setChecked(false);
                     }
@@ -83,6 +93,16 @@ public class CrearRutina extends AppCompatActivity {
         textViewHoraRecordatorio = findViewById(R.id.textview_hora_recordatorio);
         editTextTextoRecordatorio = findViewById(R.id.edittext_texto_recordatorio);
 
+        // <-- Obtener referencias a los CheckBoxes de los días de la semana
+        checkboxLunes = findViewById(R.id.checkbox_lunes);
+        checkboxMartes = findViewById(R.id.checkbox_martes);
+        checkboxMiercoles = findViewById(R.id.checkbox_miercoles);
+        checkboxJueves = findViewById(R.id.checkbox_jueves);
+        checkboxViernes = findViewById(R.id.checkbox_viernes);
+        checkboxSabado = findViewById(R.id.checkbox_sabado);
+        checkboxDomingo = findViewById(R.id.checkbox_domingo);
+        // -->
+
         botonGuardarCrearRutina = findViewById(R.id.CrearRutina);
         botonEliminarRutina = findViewById(R.id.botonEliminarRutina);
         textViewTitulo = findViewById(R.id.textViewTituloCrearRutina);
@@ -95,11 +115,11 @@ public class CrearRutina extends AppCompatActivity {
             textViewHoraRecordatorio.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             editTextTextoRecordatorio.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             if (isChecked) {
-                solicitarPermisoNotificaciones(); // Solicitar permiso si se activa
-                if (horaSeleccionadaAlarma == -1) { // Si no hay hora, pedir establecerla
+                solicitarPermisoNotificaciones();
+                if (horaSeleccionadaAlarma == -1) {
                     textViewHoraRecordatorio.setText("Establecer hora");
                 } else {
-                    actualizarTextoHoraRecordatorio(); // Mostrar hora ya seleccionada
+                    actualizarTextoHoraRecordatorio();
                 }
             }
         });
@@ -123,11 +143,21 @@ public class CrearRutina extends AppCompatActivity {
         if (modoEdicion && rutinaActual != null) {
             cargarDatosRutina();
         } else {
+            // Configuración inicial para nueva rutina
             textViewHoraRecordatorio.setVisibility(View.GONE);
             editTextTextoRecordatorio.setVisibility(View.GONE);
             horaSeleccionadaAlarma = -1;
             minutoSeleccionadoAlarma = -1;
             checkboxRecordatorio.setChecked(false);
+            // <-- Desmarcar todos los días por defecto en nueva rutina
+            checkboxLunes.setChecked(false);
+            checkboxMartes.setChecked(false);
+            checkboxMiercoles.setChecked(false);
+            checkboxJueves.setChecked(false);
+            checkboxViernes.setChecked(false);
+            checkboxSabado.setChecked(false);
+            checkboxDomingo.setChecked(false);
+            // -->
         }
 
         botonGuardarCrearRutina.setOnClickListener(v -> procesarGuardarOActualizar());
@@ -144,7 +174,7 @@ public class CrearRutina extends AppCompatActivity {
                             .setTitle("Permiso Necesario")
                             .setMessage("Para recibir recordatorios, la app necesita permiso para mostrar notificaciones.")
                             .setPositiveButton("Conceder", (dialog, which) -> requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS))
-                            .setNegativeButton("Cancelar", (dialog, which) -> checkboxRecordatorio.setChecked(false)) // Desmarcar si cancela
+                            .setNegativeButton("Cancelar", (dialog, which) -> checkboxRecordatorio.setChecked(false))
                             .create().show();
                 } else {
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -206,6 +236,28 @@ public class CrearRutina extends AppCompatActivity {
         } else {
             campoActividades.setText("");
         }
+
+        // <-- Cargar la selección de días de la semana guardada
+        if (rutinaActual.getDiasSemana() != null) {
+            List<Integer> diasProgramados = rutinaActual.getDiasSemana();
+            checkboxLunes.setChecked(diasProgramados.contains(Calendar.MONDAY));
+            checkboxMartes.setChecked(diasProgramados.contains(Calendar.TUESDAY));
+            checkboxMiercoles.setChecked(diasProgramados.contains(Calendar.WEDNESDAY));
+            checkboxJueves.setChecked(diasProgramados.contains(Calendar.THURSDAY));
+            checkboxViernes.setChecked(diasProgramados.contains(Calendar.FRIDAY));
+            checkboxSabado.setChecked(diasProgramados.contains(Calendar.SATURDAY));
+            checkboxDomingo.setChecked(diasProgramados.contains(Calendar.SUNDAY));
+        } else {
+            // Si no hay días guardados (por ejemplo, en rutinas viejas), desmarcar todo
+            checkboxLunes.setChecked(false);
+            checkboxMartes.setChecked(false);
+            checkboxMiercoles.setChecked(false);
+            checkboxJueves.setChecked(false);
+            checkboxViernes.setChecked(false);
+            checkboxSabado.setChecked(false);
+            checkboxDomingo.setChecked(false);
+        }
+        // -->
     }
 
     private void mostrarDialogoSeleccionHora() {
@@ -235,27 +287,103 @@ public class CrearRutina extends AppCompatActivity {
         String categoriaRutina = campoCategoria.getText().toString().trim();
         String textoActividades = campoActividades.getText().toString().trim();
 
+        // <-- Obtener los días de la semana seleccionados
+        List<Integer> diasSeleccionados = new ArrayList<>();
+        if (checkboxLunes.isChecked()) diasSeleccionados.add(Calendar.MONDAY);
+        if (checkboxMartes.isChecked()) diasSeleccionados.add(Calendar.TUESDAY);
+        if (checkboxMiercoles.isChecked()) diasSeleccionados.add(Calendar.WEDNESDAY);
+        if (checkboxJueves.isChecked()) diasSeleccionados.add(Calendar.THURSDAY);
+        if (checkboxViernes.isChecked()) diasSeleccionados.add(Calendar.FRIDAY);
+        if (checkboxSabado.isChecked()) diasSeleccionados.add(Calendar.SATURDAY);
+        if (checkboxDomingo.isChecked()) diasSeleccionados.add(Calendar.SUNDAY);
+        // -->
+
         boolean recordatorioEstaActivo = checkboxRecordatorio.isChecked();
         String horaDelRecordatorioFormateada = "";
         String textoRecordatorioUsuario = "";
-        long tiempoAlarmaMillis = 0;
+        // La programación de la alarma ahora debe considerar los días seleccionados
+        // Por ahora, mantendremos la lógica de alarma existente, que usa la fecha del campo "Fecha"
+        // Esto requerirá una modificación más profunda en AlarmReceiver y el sistema de alarmas más adelante
+        long tiempoAlarmaMillis = 0; // Será calculado solo si recordatorio activo y se programa para HOY
 
         if (recordatorioEstaActivo) {
             if (horaSeleccionadaAlarma != -1 && minutoSeleccionadoAlarma != -1) {
                 horaDelRecordatorioFormateada = String.format(Locale.getDefault(), "%02d:%02d", horaSeleccionadaAlarma, minutoSeleccionadoAlarma);
-                textoRecordatorioUsuario = editTextTextoRecordatorio.getText().toString().trim(); // Obtener texto personalizado
+                textoRecordatorioUsuario = editTextTextoRecordatorio.getText().toString().trim();
+
+                // Aquí la lógica de la alarma necesita ser revisada para manejar la recurrencia semanal
+                // Por ahora, la dejo como estaba, programando para una fecha y hora específica.
+                // La programación recurrente requerirá una implementación más compleja.
                 tiempoAlarmaMillis = convertirFechaHoraAMillis(fechaRutinaStr, horaDelRecordatorioFormateada);
-                if (tiempoAlarmaMillis == 0) {
-                    Toast.makeText(this, "Fecha u hora inválida para el recordatorio.", Toast.LENGTH_LONG).show(); return;
+
+                // Verificación básica para evitar programar alarmas en el pasado con la lógica actual
+                if (tiempoAlarmaMillis > 0 && tiempoAlarmaMillis < System.currentTimeMillis()) {
+                    // Si la hora de hoy ya pasó, programar para el próximo día programado
+                    Calendar cal = Calendar.getInstance();
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        Date fechaRutinaDate = sdf.parse(fechaRutinaStr);
+                        if (fechaRutinaDate != null) {
+                            cal.setTime(fechaRutinaDate);
+                        }
+                    } catch (ParseException e) {
+                        Log.e("CrearRutina", "Error parsing date for alarm scheduling");
+                        // Si la fecha es inválida, no programar alarma
+                        recordatorioEstaActivo = false; // Desactivar recordatorio si la fecha es mala
+                        tiempoAlarmaMillis = 0;
+                    }
+
+                    if (recordatorioEstaActivo) { // Si la fecha era válida y recordatorio sigue activo
+                        cal.set(Calendar.HOUR_OF_DAY, horaSeleccionadaAlarma);
+                        cal.set(Calendar.MINUTE, minutoSeleccionadoAlarma);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.MILLISECOND, 0);
+
+                        // Encontrar la próxima ocurrencia basada en los días seleccionados
+                        // Esta es una lógica simplificada que programa solo la próxima alarma, no la recurrencia.
+                        // La recurrencia es más compleja y requiere Intent.FLAG_ALLOW_WHILE_IDLE o WorkManager.
+                        Calendar now = Calendar.getInstance();
+                        if (cal.getTimeInMillis() < now.getTimeInMillis()) {
+                            // Si la hora de hoy ya pasó, avanzar al próximo día
+                            cal.add(Calendar.DAY_OF_YEAR, 1);
+                            while (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
+                                cal.add(Calendar.DAY_OF_YEAR, 1);
+                            }
+                        } else {
+                            // Si la hora de hoy no ha pasado, verificar si HOY es un día programado
+                            if (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
+                                // Si hoy no es un día programado, encontrar el próximo día programado
+                                cal.add(Calendar.DAY_OF_YEAR, 1);
+                                while (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
+                                    cal.add(Calendar.DAY_OF_YEAR, 1);
+                                }
+                            }
+                        }
+                        tiempoAlarmaMillis = cal.getTimeInMillis();
+                    }
                 }
+                // Si diasSeleccionados está vacío pero recordatorio activo, quizás avisar al usuario?
+                if (diasSeleccionados.isEmpty()) {
+                    Toast.makeText(this, "Selecciona al menos un día para el recordatorio.", Toast.LENGTH_LONG).show();
+                    recordatorioEstaActivo = false;
+                    tiempoAlarmaMillis = 0;
+                }
+
+
             } else {
                 Toast.makeText(this, "Establece una hora para el recordatorio o desactívalo.", Toast.LENGTH_LONG).show(); return;
             }
         }
 
-        if (nombreRutina.isEmpty() || fechaRutinaStr.isEmpty()) {
-            Toast.makeText(this, "El nombre y la fecha son obligatorios.", Toast.LENGTH_SHORT).show(); return;
+
+        if (nombreRutina.isEmpty()) { // La fecha ya no es estrictamente obligatoria si se programa por días
+            Toast.makeText(this, "El nombre de la rutina es obligatorio.", Toast.LENGTH_SHORT).show(); return;
         }
+        if (diasSeleccionados.isEmpty() && fechaRutinaStr.isEmpty()) {
+            Toast.makeText(this, "Selecciona días para programar o ingresa una fecha.", Toast.LENGTH_SHORT).show(); return;
+        }
+
+
         ArrayList<Actividad> listaDeObjetosActividad = new ArrayList<>();
         if (!textoActividades.isEmpty()) {
             String[] nombresActividadesArray = textoActividades.split("\\r?\\n");
@@ -266,48 +394,70 @@ public class CrearRutina extends AppCompatActivity {
                     if (modoEdicion && rutinaActual != null && rutinaActual.getActividades() != null) {
                         for (Actividad actExistente : rutinaActual.getActividades()) {
                             if (actExistente.getNombre().equals(nombreActividadLimpia)) {
-                                listaDeObjetosActividad.add(new Actividad(nombreActividadLimpia, actExistente.isCompletada())); //
+                                listaDeObjetosActividad.add(new Actividad(nombreActividadLimpia, actExistente.isCompletada()));
                                 encontradaYCompletada = true; break;
                             }
                         }
                     }
-                    if (!encontradaYCompletada) listaDeObjetosActividad.add(new Actividad(nombreActividadLimpia)); //
+                    if (!encontradaYCompletada) listaDeObjetosActividad.add(new Actividad(nombreActividadLimpia));
                 }
             }
         }
 
         if (modoEdicion) {
             if (rutinaActual != null && MenuPrincipal.listaRutinas != null && posicionRutinaAEditar >= 0 && posicionRutinaAEditar < MenuPrincipal.listaRutinas.size()) {
+                // Cancelar alarma antigua si estaba activa
                 if (rutinaActual.isRecordatorioActivo()) cancelarAlarma(this, rutinaActual.getId());
 
                 rutinaActual.setNombre(nombreRutina);
-                rutinaActual.setFecha(fechaRutinaStr);
+                rutinaActual.setFecha(fechaRutinaStr); // Mantener la fecha si se usa para algo más
                 rutinaActual.setCategoria(categoriaRutina);
                 rutinaActual.setActividades(listaDeObjetosActividad);
                 rutinaActual.setRecordatorioActivo(recordatorioEstaActivo);
                 rutinaActual.setHoraRecordatorio(horaDelRecordatorioFormateada);
                 rutinaActual.setTextoRecordatorioPersonalizado(textoRecordatorioUsuario);
+                rutinaActual.setDiasSemana(diasSeleccionados); // <-- Guardar los días seleccionados
 
-                if (recordatorioEstaActivo && tiempoAlarmaMillis > System.currentTimeMillis()) {
+                // Programar nueva alarma si el recordatorio está activo y tiene días seleccionados
+                if (recordatorioEstaActivo && !diasSeleccionados.isEmpty() && tiempoAlarmaMillis > System.currentTimeMillis()) {
+                    // La programación de alarmas recurrentes es más compleja.
+                    // Esta lógica simple solo programará la PRÓXIMA ocurrencia.
+                    // Para recurrencia real, se necesita un mecanismo más robusto.
                     programarAlarma(this, tiempoAlarmaMillis, rutinaActual.getId(), rutinaActual.getNombre(), rutinaActual.getHoraRecordatorio(), rutinaActual.getTextoRecordatorioPersonalizado());
+                } else if (recordatorioEstaActivo && diasSeleccionados.isEmpty()) {
+                    Toast.makeText(this, "Recordatorio activo pero sin días seleccionados.", Toast.LENGTH_SHORT).show();
+                } else if (recordatorioEstaActivo && tiempoAlarmaMillis <= System.currentTimeMillis()) {
+                    Toast.makeText(this, "Hora de recordatorio en el pasado. Ajusta la hora.", Toast.LENGTH_LONG).show();
                 }
+
+
                 Toast.makeText(this, "Rutina actualizada.", Toast.LENGTH_SHORT).show();
             } else { Toast.makeText(this, "Error al actualizar.", Toast.LENGTH_LONG).show(); return; }
         } else {
             Rutina nuevaRutina = new Rutina();
             nuevaRutina.setNombre(nombreRutina);
-            nuevaRutina.setFecha(fechaRutinaStr);
+            nuevaRutina.setFecha(fechaRutinaStr); // Mantener la fecha si se usa para algo más
             nuevaRutina.setCategoria(categoriaRutina);
             nuevaRutina.setActividades(listaDeObjetosActividad);
             nuevaRutina.setRecordatorioActivo(recordatorioEstaActivo);
             nuevaRutina.setHoraRecordatorio(horaDelRecordatorioFormateada);
             nuevaRutina.setTextoRecordatorioPersonalizado(textoRecordatorioUsuario);
+            nuevaRutina.setDiasSemana(diasSeleccionados); // <-- Guardar los días seleccionados en la nueva rutina
 
             if (MenuPrincipal.listaRutinas != null) {
                 MenuPrincipal.listaRutinas.add(nuevaRutina);
-                if (recordatorioEstaActivo && tiempoAlarmaMillis > System.currentTimeMillis()) {
+                // Programar alarma para la nueva rutina si el recordatorio está activo y tiene días seleccionados
+                if (recordatorioEstaActivo && !diasSeleccionados.isEmpty() && tiempoAlarmaMillis > System.currentTimeMillis()) {
+                    // La programación de alarmas recurrentes es más compleja.
+                    // Esta lógica simple solo programará la PRÓXIMA ocurrencia.
                     programarAlarma(this, tiempoAlarmaMillis, nuevaRutina.getId(), nuevaRutina.getNombre(), nuevaRutina.getHoraRecordatorio(), nuevaRutina.getTextoRecordatorioPersonalizado());
+                } else if (recordatorioEstaActivo && diasSeleccionados.isEmpty()) {
+                    Toast.makeText(this, "Recordatorio activo pero sin días seleccionados.", Toast.LENGTH_SHORT).show();
+                } else if (recordatorioEstaActivo && tiempoAlarmaMillis <= System.currentTimeMillis()) {
+                    Toast.makeText(this, "Hora de recordatorio en el pasado. Ajusta la hora.", Toast.LENGTH_LONG).show();
                 }
+
+
                 Toast.makeText(this, "Rutina creada.", Toast.LENGTH_LONG).show();
             } else { Toast.makeText(this, "Error al crear.", Toast.LENGTH_LONG).show(); return; }
         }
@@ -342,6 +492,12 @@ public class CrearRutina extends AppCompatActivity {
         datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
     }
 
+    // NOTA IMPORTANTE: La lógica actual de alarmas programará la alarma UNA SOLA VEZ
+    // en la PRÓXIMA ocurrencia de la hora seleccionada en uno de los días seleccionados
+    // (basado en la fecha del campo 'Fecha' o la fecha actual si la hora ya pasó hoy).
+    // Para recordatorios recurrentes semanales REALES, se necesita modificar la lógica de AlarmReceiver
+    // y programar alarmas repetitivas o usar WorkManager para tareas más complejas.
+    // Esta implementación es un paso intermedio.
     private long convertirFechaHoraAMillis(String fechaStr, String horaStr) {
         SimpleDateFormat formatoFechaHoraLocal = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         try {
@@ -366,12 +522,15 @@ public class CrearRutina extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rutinaId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (alarmManager != null) {
             try {
+                // Con la lógica actual, programamos una alarma exacta para la PRÓXIMA ocurrencia.
+                // Implementar recordatorios SEMANALES recurrentes requiere un enfoque diferente.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (alarmManager.canScheduleExactAlarms()) alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tiempoMillis, pendingIntent);
-                    else alarmManager.setWindow(AlarmManager.RTC_WAKEUP, tiempoMillis, 15 * 60 * 1000, pendingIntent);
+                    else alarmManager.setWindow(AlarmManager.RTC_WAKEUP, tiempoMillis, 15 * 60 * 1000, pendingIntent); // Fallback menos preciso
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tiempoMillis, pendingIntent);
                 else alarmManager.setExact(AlarmManager.RTC_WAKEUP, tiempoMillis, pendingIntent);
-                Log.i("CrearRutina", "Alarma programada para ID " + rutinaId);
+
+                Log.i("CrearRutina", "Alarma programada para ID " + rutinaId + " en " + new Date(tiempoMillis)); // Log de confirmación
             } catch (SecurityException se) { Log.e("CrearRutina", "SecurityException al programar alarma.", se); }
         }
     }

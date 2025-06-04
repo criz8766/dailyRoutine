@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivityGoogleAuth";
     private Context context;
-    private EditText usuarioCapturado;
-    private EditText claveCapturada;
-    private Button botonIniciarSesion;
+    //private EditText usuarioCapturado;
+    //private EditText claveCapturada;
+    //private Button botonIniciarSesion;
     private SignInButton botonGoogleSignIn;
 
     private FirebaseAuth mAuth;
@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this;
-        usuarioCapturado = findViewById(R.id.imputUsuario);
-        claveCapturada = findViewById(R.id.imputClave);
-        botonIniciarSesion = findViewById(R.id.botonIniciarSesion);
+        //usuarioCapturado = findViewById(R.id.imputUsuario);
+        //claveCapturada = findViewById(R.id.imputClave);
+        //botonIniciarSesion = findViewById(R.id.botonIniciarSesion);
         botonGoogleSignIn = findViewById(R.id.botonGoogleSignIn);
 
         // Inicializar Firebase Auth
@@ -93,20 +93,20 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        botonIniciarSesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usuarioIn = usuarioCapturado.getText().toString();
-                String claveIn = claveCapturada.getText().toString();
-                if (iniciarSesionSimple(usuarioIn, claveIn)) {
-                    navegarAMenuPrincipal(usuarioIn);
-                } else {
-                    Toast.makeText(context, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                }
-                usuarioCapturado.setText("");
-                claveCapturada.setText("");
-            }
-        });
+        //botonIniciarSesion.setOnClickListener(new View.OnClickListener() {
+            //@Override
+            //public void onClick(View v) {
+                //String usuarioIn = usuarioCapturado.getText().toString();
+                //String claveIn = claveCapturada.getText().toString();
+                //if (iniciarSesionSimple(usuarioIn, claveIn)) {
+                    //navegarAMenuPrincipal(usuarioIn);
+                //} else {
+                    //Toast.makeText(context, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                //}
+                //usuarioCapturado.setText("");
+                //claveCapturada.setText("");
+            //}
+        //});
 
         botonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -113,21 +113,4 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/boton_volver_menu_detalle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Volver al Menú"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/button_pomodoro_primary_bg"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"/>
-
 </LinearLayout>
