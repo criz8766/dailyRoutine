@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/fondo"
+    android:background="@color/pomodoro_cream_background"
     tools:context=".HistorialActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_historial"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/rojo"
+        android:background="@color/pomodoro_red"
         app:title="Historial de Rutinas"
         app:titleTextColor="@color/white" />
 
@@ -23,5 +23,6 @@
         android:layout_weight="1"
         android:padding="8dp"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:clipToPadding="false"/> </LinearLayout>
+        android:dividerHeight="8dp"
+        android:clipToPadding="false"/>
+</LinearLayout>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "10733484985",
+    "project_id": "dailyroutine-644c1",
+    "storage_bucket": "dailyroutine-644c1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10733484985:android:dc1882d1bb93bd69809468",
+        "android_client_info": {
+          "package_name": "cl.example.dailyroutine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10733484985-p6hcc72dna2g5stq02o9g08nebo8fosp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cl.example.dailyroutine",
+            "certificate_hash": "aaa6e46764d6b35d4caa35629001795af0b397a7"
+          }
+        },
+        {
+          "client_id": "10733484985-48lgu3nsbsk15ge92g3704crf83se797.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAemAwMasNz8Ecw0vTjWoC-gYzIGx58Y4k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10733484985-48lgu3nsbsk15ge92g3704crf83se797.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

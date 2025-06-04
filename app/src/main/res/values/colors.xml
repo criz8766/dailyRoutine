@@ -2,6 +2,4 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="rojo">#cd3e4e</color>
-    <color name="verde">#84c99c</color>
-</resources>
+    <color name="rojo">#cd3e4e</color> <color name="verde">#84c99c</color> <color name="pomodoro_red">#FF6347</color> <color name="pomodoro_red_dark">#E5533D</color> <color name="pomodoro_cream_background">#FFF9F0</color> <color name="pomodoro_light_gray_background">#F5F5F5</color> <color name="pomodoro_text_dark">#333333</color> <color name="pomodoro_text_medium">#666666</color> <color name="pomodoro_text_light">#999999</color> <color name="pomodoro_green_confirm">#84c99c</color> <color name="pomodoro_border_light">#DCDCDC</color> </resources>

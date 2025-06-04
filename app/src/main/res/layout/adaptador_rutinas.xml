@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="4dp"
+    app:cardElevation="2dp"
     app:cardUseCompatPadding="true"
-    app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="#E6FFFFFF" android:layout_marginLeft="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/white"
+    android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp">
@@ -16,10 +17,11 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <LinearLayout
-            android:id="@+id/layout_info_rutina" android:layout_width="0dp"
+            android:id="@+id/layout_info_rutina"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
@@ -32,9 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nombre Actividad Larga"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/pomodoro_text_dark"
                 android:layout_marginBottom="4dp"/>
 
             <TextView
@@ -42,8 +44,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="dd/MM/yyyy"
-                android:textSize="16sp"
-                android:textColor="#444444"
+                android:textSize="14sp"
+                android:textColor="@color/pomodoro_text_medium"
                 android:layout_marginBottom="4dp"/>
 
             <TextView
@@ -53,17 +55,20 @@
                 android:text="Categoría: Ninguna"
                 android:textSize="14sp"
                 android:textStyle="italic"
-                android:textColor="#666666"
-                android:visibility="visible"/> </LinearLayout>
+                android:textColor="@color/pomodoro_text_light"
+                android:visibility="visible"/>
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/editar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/circulo" android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Editar Rutina"
             android:scaleType="fitCenter"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            app:tint="@color/pomodoro_red"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_opcion_perfil"
+        android:title="Perfil de Usuario"
+        android:icon="@drawable/perfil"
+        app:iconTint="@color/pomodoro_text_dark" />
+
+    <item
+        android:id="@+id/menu_opcion_historial"
+        android:title="Historial de Rutinas"
+        android:icon="@drawable/lupa"
+        app:iconTint="@color/pomodoro_text_dark" />
+
+    <item
+        android:id="@+id/menu_opcion_rutinas_famosas"
+        android:title="Rutinas Populares"
+        android:icon="@android:drawable/ic_menu_compass"
+        app:iconTint="@color/pomodoro_text_dark" />
+
+</menu>

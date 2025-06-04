@@ -1,89 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/main_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo"
+    android:background="@color/pomodoro_cream_background"
     tools:context=".MenuPrincipal">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_menu_principal"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title=" "
+            app:contentInsetStartWithNavigation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/textViewTituloMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mis Rutinas"
+                    android:textColor="@color/pomodoro_red"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp" />
+
+                <ImageButton
+                    android:id="@+id/botonOpcionesMenu"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_dots_vertical_pomodoro"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Más opciones"
+                    android:padding="6dp"
+                    app:tint="@color/pomodoro_text_dark" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/botonPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/perfil"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Ver Perfil"
-                android:scaleType="fitCenter"
-                android:padding="6dp"/>
-
-            <TextView
-                android:id="@+id/textViewTituloMenu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Mis Rutinas"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"/>
-
-            <ImageButton
-                android:id="@+id/botonRutinasFamosas"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_compass" android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Rutinas Populares"
-                android:scaleType="fitCenter"
-                android:padding="6dp"
-                android:layout_marginEnd="4dp"
-                app:tint="@color/white"/>
-
-            <ImageButton
-                android:id="@+id/botonHistorial"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/lupa"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Ver Historial"
-                android:scaleType="fitCenter"
-                android:padding="6dp"
-                android:layout_marginEnd="4dp"/>
-
-            <ImageButton
-                android:id="@+id/calendario"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/calendario"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Añadir Rutina"
-                android:scaleType="fitCenter"
-                android:padding="6dp"/>
-        </LinearLayout>
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <View
+            android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#80FFFFFF"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:background="@color/pomodoro_border_light"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
 
         <ListView
             android:id="@+id/listaRutinas"
@@ -92,8 +74,21 @@
             android:layout_weight="1"
             android:padding="8dp"
             android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:clipToPadding="false"/>
-
+            android:dividerHeight="8dp"
+            android:clipToPadding="false" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAnadirRutina"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_pomodoro"
+        android:contentDescription="Añadir Rutina"
+        app:backgroundTint="@color/pomodoro_red"
+        app:tint="@color/white"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

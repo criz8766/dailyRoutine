@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/fondo"
+    android:background="@color/pomodoro_cream_background"
     tools:context=".RutinasFamosasActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_rutinas_famosas"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/rojo"
+        android:background="@color/pomodoro_red"
         app:title="Rutinas Populares"
         app:titleTextColor="@color/white" />
 
@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:padding="8dp"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
+        android:dividerHeight="8dp"
         android:clipToPadding="false"/>
 
 </LinearLayout>

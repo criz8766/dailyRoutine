@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo"
+    android:background="@color/pomodoro_cream_background"
     tools:context=".CrearRutina">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
             android:id="@+id/layoutTituloCrearRutina"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:gravity="center">
 
             <TextView
@@ -30,99 +30,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Crear Rutina"
-                android:textColor="@color/white"
+                android:textColor="@color/pomodoro_red"
                 android:textStyle="bold"
-                android:textSize="34sp"/>
+                android:textSize="28sp"/>
         </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center_vertical">
+                <LinearLayout style="@style/CampoEntradaLayout" android:layout_marginBottom="12dp">
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        style="@style/LabelCampoEntrada"
                         android:text="Nombre"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="18sp"/>
+                        android:textColor="@color/pomodoro_text_medium"/>
                     <EditText
                         android:id="@+id/imputNombre"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        style="@style/InputCampoEntrada"
                         android:hint="Ej: Rutina de mañana"
-                        android:textColor="@color/white"
-                        android:textColorHint="#E0E0E0"
-                        android:backgroundTint="@color/white"
-                        android:maxLines="1"
+                        android:background="@drawable/edittext_pomodoro_bg"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textColorHint="@color/pomodoro_text_light"
                         android:inputType="textCapSentences"/>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center_vertical">
+                <LinearLayout style="@style/CampoEntradaLayout" android:layout_marginBottom="12dp">
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        style="@style/LabelCampoEntrada"
                         android:text="Fecha"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="18sp"/>
+                        android:textColor="@color/pomodoro_text_medium"/>
                     <EditText
                         android:id="@+id/imputFecha"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        style="@style/InputCampoEntrada"
                         android:hint="Seleccionar fecha"
-                        android:textColor="@color/white"
-                        android:textColorHint="#E0E0E0"
-                        android:backgroundTint="@color/white"
+                        android:background="@drawable/edittext_pomodoro_bg"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textColorHint="@color/pomodoro_text_light"
                         android:focusable="false"
                         android:clickable="true"/>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center_vertical">
+                <LinearLayout style="@style/CampoEntradaLayout" android:layout_marginBottom="12dp">
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        style="@style/LabelCampoEntrada"
                         android:text="Categoría"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="18sp"/>
+                        android:textColor="@color/pomodoro_text_medium"/>
                     <EditText
                         android:id="@+id/imputCategoria"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        style="@style/InputCampoEntrada"
                         android:hint="Ej: Ejercicio, Estudio"
-                        android:textColor="@color/white"
-                        android:textColorHint="#E0E0E0"
-                        android:backgroundTint="@color/white"
-                        android:maxLines="1"
+                        android:background="@drawable/edittext_pomodoro_bg"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textColorHint="@color/pomodoro_text_light"
                         android:inputType="textCapWords"/>
                 </LinearLayout>
 
@@ -130,16 +96,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/edittext_pomodoro_bg"
+                    android:padding="16dp">
 
                     <CheckBox
                         android:id="@+id/checkbox_recordatorio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Activar recordatorio"
-                        android:textColor="@color/white"
-                        android:buttonTint="@color/white"
-                        android:textSize="18sp"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:buttonTint="@color/pomodoro_red"
+                        android:textSize="16sp"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"/>
 
@@ -148,20 +116,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="--:--"
-                        android:textColor="@color/white"
-                        android:textSize="24sp"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:layout_marginStart="32dp"
                         android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
                         android:drawablePadding="12dp"
                         android:visibility="gone"
                         app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
-                        app:drawableTint="@color/white" />
+                        app:drawableTint="@color/pomodoro_red" />
 
                     <EditText
                         android:id="@+id/edittext_texto_recordatorio"
@@ -170,13 +138,12 @@
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="8dp"
                         android:hint="Mensaje de recordatorio (opcional)"
-                        android:textColor="@color/white"
-                        android:textColorHint="#E0E0E0"
-                        android:backgroundTint="@color/white"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textColorHint="@color/pomodoro_text_light"
                         android:inputType="textCapSentences|textMultiLine"
                         android:maxLines="3"
                         android:minLines="1"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:visibility="gone"/>
                 </LinearLayout>
 
@@ -191,69 +158,54 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Actividades (una por línea)"
-                        android:textColor="@color/white"
+                        android:textColor="@color/pomodoro_text_medium"
                         android:textStyle="bold"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:layout_marginBottom="8dp"/>
 
                     <EditText
                         android:id="@+id/imputActividades"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minLines="3"
-                        android:maxLines="6"
+                        android:minLines="4"
+                        android:maxLines="8"
                         android:hint="Ej: Hacer ejercicio\nLeer un libro\nMeditar"
-                        android:textColor="@color/white"
-                        android:textColorHint="#E0E0E0"
-                        android:backgroundTint="@color/white"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textColorHint="@color/pomodoro_text_light"
+                        android:background="@drawable/edittext_pomodoro_bg"
                         android:inputType="textMultiLine|textCapSentences"
                         android:gravity="top"
                         android:scrollbars="vertical"
-                        android:background="@drawable/edittext_borde_blanco"/>
+                        android:padding="12dp"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/CrearRutina"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:paddingTop="16dp">
-            <Button
-                android:id="@+id/CrearRutina"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Crear"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:backgroundTint="@color/verde"/>
-        </LinearLayout>
+            android:text="Crear"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_pomodoro_primary_bg"/>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/botonEliminarRutina"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
-            <Button
-                android:id="@+id/botonEliminarRutina"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Eliminar Rutina"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:backgroundTint="@color/rojo"
-                android:visibility="gone"/>
-        </LinearLayout>
+            android:text="Eliminar Rutina"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/button_pomodoro_danger_bg"
+            android:visibility="gone"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

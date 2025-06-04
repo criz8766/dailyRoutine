@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     android:gravity="center_vertical"
     android:background="?android:attr/selectableItemBackground">
 
@@ -12,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        android:buttonTint="@color/verde" />
+        android:buttonTint="@color/pomodoro_red" />
 
     <TextView
         android:id="@+id/textview_nombre_actividad"
@@ -21,6 +24,6 @@
         android:layout_weight="1"
         android:text="Nombre de la Actividad"
         android:textSize="18sp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@color/pomodoro_text_dark"/>
 
 </LinearLayout>
