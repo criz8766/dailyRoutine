@@ -1,4 +1,3 @@
-// app/src/main/java/cl/example/dailyroutine/MainActivity.java
 package cl.example.dailyroutine;
 
 import android.content.Context;
@@ -6,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -96,11 +93,6 @@ public class MainActivity extends AppCompatActivity {
         // Comprobar si el usuario ya inició sesión con Firebase
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // Verificar si la actividad se lanzó después de un cierre de sesión
-            // Esto es crucial para evitar que el usuario "logueado" vuelva automáticamente
-            // justo después de cerrar sesión desde MenuPrincipal.
-            // Para el cierre de sesión, MenuPrincipal ya usa FLAG_ACTIVITY_CLEAR_TOP,
-            // pero si la app se "mató" y se reinició con el usuario logueado, esto lo detectará.
             Log.d(TAG, "Usuario ya logueado con Firebase: " + (currentUser.getEmail() != null ? currentUser.getEmail() : currentUser.getUid()));
             String nombreUsuario = currentUser.getDisplayName();
             if (nombreUsuario == null || nombreUsuario.isEmpty()) {

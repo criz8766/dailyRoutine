@@ -40,6 +40,84 @@
                     android:textStyle="bold"
                     android:layout_marginStart="16dp" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewStreakIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_flame_pomodoro"
+                        android:contentDescription="Icono de racha" />
+
+                    <TextView
+                        android:id="@+id/textViewStreakCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/pomodoro_red"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutStreakFreezer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewStreakFreezerIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_snowflake_pomodoro"
+                        android:contentDescription="Icono de congelador de racha" />
+
+                    <TextView
+                        android:id="@+id/textViewStreakFreezerCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/pomodoro_text_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/imageViewPointsIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_coin_pomodoro"
+                        android:contentDescription="Icono de puntos/monedas" />
+
+                    <TextView
+                        android:id="@+id/textViewPointsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/pomodoro_red"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+
                 <ImageButton
                     android:id="@+id/botonOpcionesMenu"
                     android:layout_width="40dp"

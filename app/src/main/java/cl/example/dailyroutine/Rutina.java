@@ -1,12 +1,7 @@
-// app/src/main/java/cl/example/dailyroutine/Rutina.java
 package cl.example.dailyroutine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class Rutina {
 
@@ -21,8 +16,6 @@ public class Rutina {
     private List<Integer> diasSemana;
 
     private static int proximoId = 1; // Inicializar en 1 por defecto
-
-    // Nuevo método para establecer el próximo ID (usado después de cargar desde SharedPreferences)
     public static synchronized void setProximoId(int newId) {
         if (newId > proximoId) {
             proximoId = newId;

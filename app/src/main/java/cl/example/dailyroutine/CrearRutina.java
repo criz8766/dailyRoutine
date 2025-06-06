@@ -1,4 +1,3 @@
-// app/src/main/java/cl/example/dailyroutine/CrearRutina.java
 package cl.example.dailyroutine;
 
 import android.Manifest;
@@ -6,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +25,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.gson.Gson; // Importar Gson
-import android.content.SharedPreferences; // Importar SharedPreferences
+import com.google.gson.Gson;
+import android.content.SharedPreferences;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -292,71 +289,84 @@ public class CrearRutina extends AppCompatActivity {
 
         boolean recordatorioEstaActivo = checkboxRecordatorio.isChecked();
         String horaDelRecordatorioFormateada = "";
-        String textoRecordatorioUsuario = "";
+        String textoRecordatorioUsuario = editTextTextoRecordatorio.getText().toString().trim();
         long tiempoAlarmaMillis = 0;
 
         if (recordatorioEstaActivo) {
-            if (horaSeleccionadaAlarma != -1 && minutoSeleccionadoAlarma != -1) {
-                horaDelRecordatorioFormateada = String.format(Locale.getDefault(), "%02d:%02d", horaSeleccionadaAlarma, minutoSeleccionadoAlarma);
-                textoRecordatorioUsuario = editTextTextoRecordatorio.getText().toString().trim();
-
-                tiempoAlarmaMillis = convertirFechaHoraAMillis(fechaRutinaStr, horaDelRecordatorioFormateada);
-
-                if (tiempoAlarmaMillis > 0 && tiempoAlarmaMillis < System.currentTimeMillis()) {
-                    Calendar cal = Calendar.getInstance();
-                    try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                        Date fechaRutinaDate = sdf.parse(fechaRutinaStr);
-                        if (fechaRutinaDate != null) {
-                            cal.setTime(fechaRutinaDate);
-                        }
-                    } catch (ParseException e) {
-                        Log.e("CrearRutina", "Error parsing date for alarm scheduling");
-                        recordatorioEstaActivo = false;
-                        tiempoAlarmaMillis = 0;
-                    }
-
-                    if (recordatorioEstaActivo) {
-                        cal.set(Calendar.HOUR_OF_DAY, horaSeleccionadaAlarma);
-                        cal.set(Calendar.MINUTE, minutoSeleccionadoAlarma);
-                        cal.set(Calendar.SECOND, 0);
-                        cal.set(Calendar.MILLISECOND, 0);
-
-                        Calendar now = Calendar.getInstance();
-                        if (cal.getTimeInMillis() < now.getTimeInMillis()) {
-                            cal.add(Calendar.DAY_OF_YEAR, 1);
-                            while (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
-                                cal.add(Calendar.DAY_OF_YEAR, 1);
-                            }
-                        } else {
-                            if (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
-                                cal.add(Calendar.DAY_OF_YEAR, 1);
-                                while (!diasSeleccionados.contains(cal.get(Calendar.DAY_OF_WEEK))) {
-                                    cal.add(Calendar.DAY_OF_YEAR, 1);
-                                }
-                            }
-                        }
-                        tiempoAlarmaMillis = cal.getTimeInMillis();
-                    }
-                }
-                if (diasSeleccionados.isEmpty()) {
-                    Toast.makeText(this, "Selecciona al menos un día para el recordatorio.", Toast.LENGTH_LONG).show();
-                    recordatorioEstaActivo = false;
-                    tiempoAlarmaMillis = 0;
-                }
-
-
-            } else {
-                Toast.makeText(this, "Establece una hora para el recordatorio o desactívalo.", Toast.LENGTH_LONG).show(); return;
+            if (horaSeleccionadaAlarma == -1 || minutoSeleccionadoAlarma == -1) {
+                Toast.makeText(this, "Establece una hora para el recordatorio o desactívalo.", Toast.LENGTH_LONG).show();
+                return;
             }
+            if (diasSeleccionados.isEmpty() && fechaRutinaStr.isEmpty()) {
+                Toast.makeText(this, "Selecciona al menos un día para el recordatorio o ingresa una fecha.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            horaDelRecordatorioFormateada = String.format(Locale.getDefault(), "%02d:%02d", horaSeleccionadaAlarma, minutoSeleccionadoAlarma);
+
+            if (textoRecordatorioUsuario.isEmpty()) {
+                textoRecordatorioUsuario = "Es hora de tu rutina: " + nombreRutina + " (" + horaDelRecordatorioFormateada + ")";
+            }
+
+            Calendar calendarAlarma = Calendar.getInstance();
+            if (!fechaRutinaStr.isEmpty()) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    Date fechaRutinaDate = sdf.parse(fechaRutinaStr);
+                    if (fechaRutinaDate != null) {
+                        calendarAlarma.setTime(fechaRutinaDate);
+                    }
+                } catch (ParseException e) {
+                    Log.e("CrearRutina", "Error parsing date for alarm scheduling: " + e.getMessage());
+                    if (diasSeleccionados.isEmpty()) {
+                        recordatorioEstaActivo = false;
+                        Toast.makeText(this, "Error en el formato de fecha. Recordatorio desactivado.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+            }
+
+            calendarAlarma.set(Calendar.HOUR_OF_DAY, horaSeleccionadaAlarma);
+            calendarAlarma.set(Calendar.MINUTE, minutoSeleccionadoAlarma);
+            calendarAlarma.set(Calendar.SECOND, 0);
+            calendarAlarma.set(Calendar.MILLISECOND, 0);
+
+            if (!diasSeleccionados.isEmpty()) {
+                long currentTimeMillis = System.currentTimeMillis();
+                boolean foundNextDay = false;
+                for (int i = 0; i < 7; i++) {
+                    Calendar tempCal = (Calendar) calendarAlarma.clone();
+                    tempCal.add(Calendar.DAY_OF_YEAR, i);
+                    if (diasSeleccionados.contains(tempCal.get(Calendar.DAY_OF_WEEK))) {
+                        if (tempCal.getTimeInMillis() < currentTimeMillis && i == 0) {
+                            continue;
+                        }
+                        calendarAlarma.setTimeInMillis(tempCal.getTimeInMillis());
+                        foundNextDay = true;
+                        break;
+                    }
+                }
+                if (!foundNextDay) {
+                    Toast.makeText(this, "No se encontró un día válido para programar el recordatorio. Ajuste los días o la hora.", Toast.LENGTH_LONG).show();
+                    recordatorioEstaActivo = false;
+                    return;
+                }
+            } else {
+                if (calendarAlarma.getTimeInMillis() < System.currentTimeMillis()) {
+                    Toast.makeText(this, "La hora de recordatorio seleccionada ya ha pasado para la fecha especificada. Recordatorio no programado.", Toast.LENGTH_LONG).show();
+                    recordatorioEstaActivo = false;
+                    return;
+                }
+            }
+            tiempoAlarmaMillis = calendarAlarma.getTimeInMillis();
         }
 
 
         if (nombreRutina.isEmpty()) {
             Toast.makeText(this, "El nombre de la rutina es obligatorio.", Toast.LENGTH_SHORT).show(); return;
         }
-        if (diasSeleccionados.isEmpty() && fechaRutinaStr.isEmpty()) {
-            Toast.makeText(this, "Selecciona días para programar o ingresa una fecha.", Toast.LENGTH_SHORT).show(); return;
+        if (diasSeleccionados.isEmpty() && fechaRutinaStr.isEmpty() && recordatorioEstaActivo) {
+            Toast.makeText(this, "Selecciona días para programar o ingresa una fecha (o desactiva el recordatorio).", Toast.LENGTH_SHORT).show(); return;
         }
 
 
@@ -393,12 +403,12 @@ public class CrearRutina extends AppCompatActivity {
                 rutinaActual.setTextoRecordatorioPersonalizado(textoRecordatorioUsuario);
                 rutinaActual.setDiasSemana(diasSeleccionados);
 
-                if (recordatorioEstaActivo && !diasSeleccionados.isEmpty() && tiempoAlarmaMillis > System.currentTimeMillis()) {
-                    programarAlarma(this, tiempoAlarmaMillis, rutinaActual.getId(), rutinaActual.getNombre(), rutinaActual.getHoraRecordatorio(), rutinaActual.getTextoRecordatorioPersonalizado());
-                } else if (recordatorioEstaActivo && diasSeleccionados.isEmpty()) {
-                    Toast.makeText(this, "Recordatorio activo pero sin días seleccionados.", Toast.LENGTH_SHORT).show();
-                } else if (recordatorioEstaActivo && tiempoAlarmaMillis <= System.currentTimeMillis()) {
-                    Toast.makeText(this, "Hora de recordatorio en el pasado. Ajusta la hora.", Toast.LENGTH_LONG).show();
+                if (recordatorioEstaActivo) {
+                    if (!diasSeleccionados.isEmpty()) {
+                        programarAlarmaRepetitiva(this, rutinaActual.getId(), rutinaActual.getNombre(), rutinaActual.getHoraRecordatorio(), rutinaActual.getTextoRecordatorioPersonalizado(), rutinaActual.getDiasSemana());
+                    } else if (tiempoAlarmaMillis > System.currentTimeMillis()) {
+                        programarAlarma(this, tiempoAlarmaMillis, rutinaActual.getId(), rutinaActual.getNombre(), rutinaActual.getHoraRecordatorio(), rutinaActual.getTextoRecordatorioPersonalizado());
+                    }
                 }
 
                 Toast.makeText(this, "Rutina actualizada.", Toast.LENGTH_SHORT).show();
@@ -416,18 +426,17 @@ public class CrearRutina extends AppCompatActivity {
 
             if (MenuPrincipal.listaRutinas != null) {
                 MenuPrincipal.listaRutinas.add(nuevaRutina);
-                if (recordatorioEstaActivo && !diasSeleccionados.isEmpty() && tiempoAlarmaMillis > System.currentTimeMillis()) {
-                    programarAlarma(this, tiempoAlarmaMillis, nuevaRutina.getId(), nuevaRutina.getNombre(), nuevaRutina.getHoraRecordatorio(), nuevaRutina.getTextoRecordatorioPersonalizado());
-                } else if (recordatorioEstaActivo && diasSeleccionados.isEmpty()) {
-                    Toast.makeText(this, "Recordatorio activo pero sin días seleccionados.", Toast.LENGTH_SHORT).show();
-                } else if (recordatorioEstaActivo && tiempoAlarmaMillis <= System.currentTimeMillis()) {
-                    Toast.makeText(this, "Hora de recordatorio en el pasado. Ajusta la hora.", Toast.LENGTH_LONG).show();
+                if (recordatorioEstaActivo) {
+                    if (!diasSeleccionados.isEmpty()) {
+                        programarAlarmaRepetitiva(this, nuevaRutina.getId(), nuevaRutina.getNombre(), nuevaRutina.getHoraRecordatorio(), nuevaRutina.getTextoRecordatorioPersonalizado(), nuevaRutina.getDiasSemana());
+                    } else if (tiempoAlarmaMillis > System.currentTimeMillis()) {
+                        programarAlarma(this, tiempoAlarmaMillis, nuevaRutina.getId(), nuevaRutina.getNombre(), nuevaRutina.getHoraRecordatorio(), nuevaRutina.getTextoRecordatorioPersonalizado());
+                    }
                 }
                 Toast.makeText(this, "Rutina creada.", Toast.LENGTH_LONG).show();
             } else { Toast.makeText(this, "Error al crear.", Toast.LENGTH_LONG).show(); return; }
         }
 
-        // Llamar a guardarRutinas() al finalizar la operación
         guardarRutinasLocales();
         finish();
     }
@@ -442,7 +451,6 @@ public class CrearRutina extends AppCompatActivity {
                         if (rutinaActual.isRecordatorioActivo()) cancelarAlarma(CrearRutina.this, rutinaActual.getId());
                         MenuPrincipal.listaRutinas.remove(posicionRutinaAEditar);
                         Toast.makeText(CrearRutina.this, "Rutina eliminada.", Toast.LENGTH_SHORT).show();
-                        // Llamar a guardarRutinas() después de eliminar
                         guardarRutinasLocales();
                         finish();
                     } else Toast.makeText(CrearRutina.this, "Error al eliminar.", Toast.LENGTH_LONG).show();
@@ -482,6 +490,7 @@ public class CrearRutina extends AppCompatActivity {
         intent.putExtra(AlarmReceiver.EXTRA_RUTINA_NOMBRE, rutinaNombre);
         intent.putExtra(AlarmReceiver.EXTRA_RUTINA_HORA, rutinaHora);
         intent.putExtra(AlarmReceiver.EXTRA_TEXTO_PERSONALIZADO, textoPersonalizado);
+        intent.putExtra(AlarmReceiver.EXTRA_RUTINA_ID, rutinaId);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rutinaId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (alarmManager != null) {
@@ -497,24 +506,93 @@ public class CrearRutina extends AppCompatActivity {
         }
     }
 
-    private void cancelarAlarma(Context context, int rutinaId) {
+    private void programarAlarmaRepetitiva(Context context, int rutinaId, String rutinaNombre, String rutinaHora, String textoPersonalizado, List<Integer> diasSemana) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Permiso de notificación no concedido.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rutinaId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        if (alarmManager != null && pendingIntent != null) {
-            alarmManager.cancel(pendingIntent);
-            pendingIntent.cancel();
-            Log.i("CrearRutina", "Alarma cancelada para ID: " + rutinaId);
+        if (alarmManager == null) return;
+
+        cancelarAlarma(context, rutinaId);
+
+        Calendar now = Calendar.getInstance();
+        int currentDayOfWeek = now.get(Calendar.DAY_OF_WEEK);
+        int currentHour = now.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = now.get(Calendar.MINUTE);
+
+        int targetHour = Integer.parseInt(rutinaHora.split(":")[0]);
+        int targetMinute = Integer.parseInt(rutinaHora.split(":")[1]);
+
+        for (Integer dayOfWeek : diasSemana) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, targetHour);
+            calendar.set(Calendar.MINUTE, targetMinute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            int daysToAdd = (dayOfWeek - currentDayOfWeek + 7) % 7;
+            if (daysToAdd == 0) {
+                if (calendar.getTimeInMillis() <= now.getTimeInMillis()) {
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                }
+            } else {
+                calendar.add(Calendar.DAY_OF_YEAR, daysToAdd);
+            }
+
+            int uniqueRequestCode = rutinaId * 10 + dayOfWeek;
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra(AlarmReceiver.EXTRA_NOTIFICATION_ID, uniqueRequestCode);
+            intent.putExtra(AlarmReceiver.EXTRA_RUTINA_NOMBRE, rutinaNombre);
+            intent.putExtra(AlarmReceiver.EXTRA_RUTINA_HORA, rutinaHora);
+            intent.putExtra(AlarmReceiver.EXTRA_TEXTO_PERSONALIZADO, textoPersonalizado);
+            intent.putExtra(AlarmReceiver.EXTRA_DAY_OF_WEEK, dayOfWeek);
+            intent.putExtra(AlarmReceiver.EXTRA_RUTINA_ID, rutinaId); // Pasa el ID de la rutina aquí
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, uniqueRequestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
+                Log.i("CrearRutina", "Alarma repetitiva programada para ID " + rutinaId + " (Día " + dayOfWeek + ") a las " + rutinaHora + " en " + new Date(calendar.getTimeInMillis()));
+            } catch (SecurityException se) { Log.e("CrearRutina", "SecurityException al programar alarma.", se); }
         }
     }
 
-    // Método para guardar las rutinas. Llama a un método estático o público en MenuPrincipal
+
+    private void cancelarAlarma(Context context, int rutinaId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rutinaId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent);
+                pendingIntent.cancel();
+                Log.i("CrearRutina", "Alarma única cancelada para ID: " + rutinaId);
+            }
+
+            for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) {
+                int uniqueRequestCode = rutinaId * 10 + dayOfWeek;
+                PendingIntent dailyPendingIntent = PendingIntent.getBroadcast(context, uniqueRequestCode, intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
+                if (dailyPendingIntent != null) {
+                    alarmManager.cancel(dailyPendingIntent);
+                    dailyPendingIntent.cancel();
+                    Log.i("CrearRutina", "Alarma repetitiva cancelada para ID: " + rutinaId + " (Día " + dayOfWeek + ")");
+                }
+            }
+        }
+    }
+
     private void guardarRutinasLocales() {
-        // Accede a SharedPreferences y Gson directamente para guardar la lista estática
         SharedPreferences sharedPreferences = getSharedPreferences(MenuPrincipal.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(MenuPrincipal.listaRutinas); // Accede a la lista estática
+        String json = gson.toJson(MenuPrincipal.listaRutinas);
         editor.putString(MenuPrincipal.KEY_RUTINAS, json);
         editor.apply();
         Log.d("CrearRutina", "Rutinas guardadas localmente.");

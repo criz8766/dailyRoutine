@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class HistorialActivity extends AppCompatActivity {
 
     private ListView lvHistorial;
-    private AdaptadorHistorial adaptadorHistorialObj; // Renombrado para claridad
+    private AdaptadorHistorial adaptadorHistorialObj;
     private Toolbar toolbar;
 
     @Override

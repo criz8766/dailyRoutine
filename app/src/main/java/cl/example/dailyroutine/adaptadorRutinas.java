@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-// No se importa com.google.android.material.chip.Chip si se revierte a TextView
 import java.util.ArrayList;
 
 public class adaptadorRutinas extends BaseAdapter {
@@ -49,9 +48,9 @@ public class adaptadorRutinas extends BaseAdapter {
             holder = new ViewHolder();
             holder.nombreRutinaTV = view.findViewById(R.id.nombreRutina);
             holder.fechaTV = view.findViewById(R.id.fecha);
-            holder.categoriaTV = view.findViewById(R.id.categoriaRutina); // TextView para categoría
+            holder.categoriaTV = view.findViewById(R.id.categoriaRutina);
             holder.editarButton = view.findViewById(R.id.editar);
-            holder.itemLayout = view.findViewById(R.id.layout_info_rutina); // El LinearLayout clickeable
+            holder.itemLayout = view.findViewById(R.id.layout_info_rutina);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -66,8 +65,8 @@ public class adaptadorRutinas extends BaseAdapter {
             holder.categoriaTV.setText("Categoría: " + rutina.getCategoria());
             holder.categoriaTV.setVisibility(View.VISIBLE);
         } else {
-            holder.categoriaTV.setText("Categoría: Ninguna"); // O View.GONE
-            holder.categoriaTV.setVisibility(View.VISIBLE); // Asegúrate de que sea visible si muestras "Ninguna"
+            holder.categoriaTV.setText("Categoría: Ninguna");
+            holder.categoriaTV.setVisibility(View.VISIBLE);
         }
 
         holder.editarButton.setOnClickListener(v -> {
@@ -88,7 +87,7 @@ public class adaptadorRutinas extends BaseAdapter {
     private static class ViewHolder {
         TextView nombreRutinaTV;
         TextView fechaTV;
-        TextView categoriaTV; // Revertido a TextView
+        TextView categoriaTV;
         ImageButton editarButton;
         LinearLayout itemLayout;
     }

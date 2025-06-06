@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
@@ -23,12 +25,13 @@
             android:exported="false"
             android:label="Rutinas Populares"
             android:parentActivityName=".MenuPrincipal"
-            android:theme="@style/Theme.DailyRoutine"/> <activity
-        android:name=".PerfilActivity"
-        android:exported="false"
-        android:label="Perfil de Usuario"
-        android:parentActivityName=".MenuPrincipal"
-        android:theme="@style/Theme.DailyRoutine"/>
+            android:theme="@style/Theme.DailyRoutine"/>
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false"
+            android:label="Perfil de Usuario"
+            android:parentActivityName=".MenuPrincipal"
+            android:theme="@style/Theme.DailyRoutine"/>
 
         <activity
             android:name=".HistorialActivity"
@@ -46,19 +49,42 @@
 
         <activity
             android:name=".CrearRutina"
-            android:exported="false" /> <activity
-        android:name=".MenuPrincipal"
-        android:exported="false" /> <activity
-        android:name=".SplashActivity"
-        android:exported="true"
-        android:theme="@style/Theme.DailyRoutine"> <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-    </intent-filter>
-    </activity>
+            android:exported="false" />
+        <activity
+            android:name=".MenuPrincipal"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DailyRoutine">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" /> <receiver android:name=".AlarmReceiver" android:enabled="true" android:exported="false" />
+            android:exported="true" />
+
+        <receiver android:name=".AlarmReceiver" android:enabled="true" android:exported="false" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".NotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false"> <intent-filter>
+            <action android:name="cl.example.dailyroutine.ACTION_MARK_COMPLETED" />
+        </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

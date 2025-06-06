@@ -63,12 +63,11 @@
             android:id="@+id/editar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@android:drawable/ic_menu_edit"
+            android:src="@drawable/ic_menu_edit"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Editar Rutina"
             android:scaleType="fitCenter"
-            android:padding="8dp"
-            app:tint="@color/pomodoro_red"/>
+            android:padding="8dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

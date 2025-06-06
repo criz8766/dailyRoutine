@@ -30,7 +30,7 @@ public class PerfilActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private static final String PREFS_NAME = "PreferenciasPerfil";
     private static final String KEY_NOMBRE_PANTALLA = "nombrePantalla";
-    private static final String KEY_AVATAR_URI = "avatarUri"; // Nueva clave para la URI del avatar
+    private static final String KEY_AVATAR_URI = "avatarUri";
     public static final String EXTRA_USERNAME = "USERNAME_ACTUAL";
 
     private ActivityResultLauncher<Intent> galleryActivityResultLauncher;
@@ -58,7 +58,7 @@ public class PerfilActivity extends AppCompatActivity {
         if (username != null && !username.isEmpty()) {
             tvUsername.setText(username);
         } else {
-            tvUsername.setText("Usuario no disponible"); // Fallback
+            tvUsername.setText("Usuario no disponible");
         }
 
         cargarNombrePantalla();
@@ -79,7 +79,7 @@ public class PerfilActivity extends AppCompatActivity {
                         Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
                             ivAvatar.setImageURI(imageUri); // Establecer la imagen seleccionada
-                            guardarAvatarUri(imageUri); // Guardar la URI con permiso persistente
+                            guardarAvatarUri(imageUri); // Guardar la foto permiso persistente
                         }
                     }
                 });
@@ -117,9 +117,7 @@ public class PerfilActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 // Si falla la carga (ej. permiso perdido o imagen borrada), usar el avatar por defecto
-                ivAvatar.setImageResource(R.drawable.perfil); // O la imagen por defecto que uses
-                // Opcional: remover la URI inválida para evitar futuros errores
-                // sharedPreferences.edit().remove(KEY_AVATAR_URI).apply();
+                ivAvatar.setImageResource(R.drawable.perfil);
                 Toast.makeText(this, "Error al cargar la foto de perfil. Usando imagen por defecto.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -139,17 +137,16 @@ public class PerfilActivity extends AppCompatActivity {
         } catch (SecurityException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error de permiso al guardar la foto.", Toast.LENGTH_SHORT).show();
-            // Si falla por permiso, podrías querer limpiar la URI guardada
             sharedPreferences.edit().remove(KEY_AVATAR_URI).apply();
         }
     }
 
     // Método para abrir la galería
     private void abrirGaleria() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // Usar ACTION_OPEN_DOCUMENT
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Conceder permiso temporal
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         galleryActivityResultLauncher.launch(intent);
     }
 
@@ -157,7 +154,7 @@ public class PerfilActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish(); // Vuelve a la actividad anterior
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

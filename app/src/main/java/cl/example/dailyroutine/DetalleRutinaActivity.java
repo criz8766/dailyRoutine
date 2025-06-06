@@ -1,4 +1,3 @@
-// app/src/main/java/cl/example/dailyroutine/DetalleRutinaActivity.java
 package cl.example.dailyroutine;
 
 import android.os.Bundle;
@@ -13,8 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson; // Importar Gson
-import android.content.SharedPreferences; // Importar SharedPreferences
+import com.google.gson.Gson;
+import android.content.SharedPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,11 +71,11 @@ public class DetalleRutinaActivity extends AppCompatActivity {
         adaptadorActividades = new AdaptadorActividades(this, rutinaActual.getActividades(), new AdaptadorActividades.OnActividadCheckedChangeListener() {
             @Override
             public void onActividadCheckedChanged(int position, boolean isChecked) {
-                // El estado de la actividad ya se actualiza dentro del AdaptadorActividades
-                // Después de cada cambio, guarda las rutinas
                 guardarRutinasLocales(); // Llama al método para guardar
                 if (rutinaActual.todasActividadesCompletadas()) {
                     verificarYActualizarRacha();
+                    GestorDeRachas.sumarPuntos(DetalleRutinaActivity.this, 10); // Sumar 10 puntos por completar una rutina
+                    Toast.makeText(DetalleRutinaActivity.this, "¡Rutina completada! +10 Puntos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -84,10 +83,15 @@ public class DetalleRutinaActivity extends AppCompatActivity {
 
 
         btnMarcarTodasCompletadas.setOnClickListener(v -> {
+            boolean wasAlreadyCompleted = rutinaActual.todasActividadesCompletadas(); // Verificar antes de marcar
             marcarTodasLasActividades(true);
             guardarRutinasLocales(); // Guarda después de marcar todas
             if (rutinaActual.todasActividadesCompletadas()) {
                 verificarYActualizarRacha();
+                if (!wasAlreadyCompleted) {
+                    GestorDeRachas.sumarPuntos(DetalleRutinaActivity.this, 10);
+                    Toast.makeText(DetalleRutinaActivity.this, "¡Rutina completada! +10 Puntos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -163,13 +167,11 @@ public class DetalleRutinaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Método para guardar las rutinas. Llama a un método estático o público en MenuPrincipal
     private void guardarRutinasLocales() {
-        // Accede a SharedPreferences y Gson directamente para guardar la lista estática
         SharedPreferences sharedPreferences = getSharedPreferences(MenuPrincipal.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(MenuPrincipal.listaRutinas); // Accede a la lista estática
+        String json = gson.toJson(MenuPrincipal.listaRutinas);
         editor.putString(MenuPrincipal.KEY_RUTINAS, json);
         editor.apply();
         Log.d("DetalleRutinaActivity", "Rutinas guardadas localmente desde DetalleRutinaActivity.");

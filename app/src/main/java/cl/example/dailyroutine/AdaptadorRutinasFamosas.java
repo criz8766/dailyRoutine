@@ -33,8 +33,6 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // Es mejor usar un ID estable si las rutinas lo tienen.
-        // Si el ID autogenerado de Rutina es fiable y único aquí, usarlo.
         return listaRutinasFamosas.get(position).getId();
     }
 
@@ -50,7 +48,6 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
             holder.tvDescripcion = convertView.findViewById(R.id.textview_descripcion_rutina_famosa);
             holder.tvActividadesLista = convertView.findViewById(R.id.textview_actividades_rutina_famosa_lista);
             holder.tvActividadesTitulo = convertView.findViewById(R.id.textview_actividades_rutina_famosa_titulo);
-            // holder.btnAnadir = convertView.findViewById(R.id.boton_anadir_a_mis_rutinas); // Descomentar si se usa
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -61,7 +58,6 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
         holder.tvNombre.setText(rutinaFamosa.getNombre());
         holder.tvCategoria.setText("Categoría: " + (rutinaFamosa.getCategoria() != null && !rutinaFamosa.getCategoria().isEmpty() ? rutinaFamosa.getCategoria() : "General"));
 
-        // Usar el campo 'fecha' de Rutina como descripción para las rutinas famosas
         if (rutinaFamosa.getFecha() != null && !rutinaFamosa.getFecha().isEmpty()) {
             holder.tvDescripcion.setText(rutinaFamosa.getFecha());
             holder.tvDescripcion.setVisibility(View.VISIBLE);
@@ -75,7 +71,6 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
             for (Actividad act : rutinaFamosa.getActividades()) {
                 sbActividades.append("- ").append(act.getNombre()).append("\n");
             }
-            // Quitar el último salto de línea si existe
             if (sbActividades.length() > 0) {
                 sbActividades.setLength(sbActividades.length() - 1);
             }
@@ -87,7 +82,7 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
             holder.tvActividadesTitulo.setVisibility(View.GONE);
         }
 
-        // Lógica para el botón (si se implementa)
+        // Lógica para el botón (si se implementa mas adelante)
         /*
         if (holder.btnAnadir != null) {
             holder.btnAnadir.setOnClickListener(v -> {
@@ -110,6 +105,5 @@ public class AdaptadorRutinasFamosas extends BaseAdapter {
         TextView tvDescripcion;
         TextView tvActividadesTitulo;
         TextView tvActividadesLista;
-        // Button btnAnadir; // Descomentar si se usa
     }
 }

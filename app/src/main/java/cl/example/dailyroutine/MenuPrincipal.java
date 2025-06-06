@@ -1,15 +1,19 @@
-// app/src/main/java/cl/example/dailyroutine/MenuPrincipal.java
 package cl.example.dailyroutine;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences; // Importar SharedPreferences
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,12 +22,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.gson.Gson; // Importar Gson
-import com.google.gson.reflect.TypeToken; // Importar TypeToken para Gson
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type; // Importar Type
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -36,12 +39,19 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
 
     private FloatingActionButton fabAnadirRutina;
     private ImageButton botonOpcionesMenu;
+    private TextView textViewStreakCount;
+    private ImageView imageViewStreakIcon;
+    private TextView textViewStreakFreezerCount;
+    private ImageView imageViewStreakFreezerIcon;
+    private TextView textViewPointsCount;
+    private ImageView imageViewPointsIcon;
+    private static final int COSTO_CONGELADOR = 50;
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
-    public static final String PREFS_NAME = "DailyRoutinePrefs"; // Nombre del archivo de preferencias
-    public static final String KEY_RUTINAS = "rutinasList"; // Clave para la lista de rutinas
+    public static final String PREFS_NAME = "DailyRoutinePrefs";
+    public static final String KEY_RUTINAS = "rutinasList";
 
 
     @Override
@@ -58,15 +68,21 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
             nombreUsuarioActual = "Usuario";
         }
 
-        cargarRutinas(); // Cargar rutinas al iniciar la actividad
+        cargarRutinas(this);
 
         listView = findViewById(R.id.listaRutinas);
         adaptadorRutinasObj = new adaptadorRutinas(listaRutinas, MenuPrincipal.this);
         listView.setAdapter(adaptadorRutinasObj);
 
-
         fabAnadirRutina = findViewById(R.id.fabAnadirRutina);
         botonOpcionesMenu = findViewById(R.id.botonOpcionesMenu);
+        textViewStreakCount = findViewById(R.id.textViewStreakCount);
+        imageViewStreakIcon = findViewById(R.id.imageViewStreakIcon);
+        textViewStreakFreezerCount = findViewById(R.id.textViewStreakFreezerCount);
+        imageViewStreakFreezerIcon = findViewById(R.id.imageViewStreakFreezerIcon);
+        textViewPointsCount = findViewById(R.id.textViewPointsCount);
+        imageViewPointsIcon = findViewById(R.id.imageViewPointsIcon);
+
 
         fabAnadirRutina.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +97,39 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
                 showPopupMenu(v);
             }
         });
+
+        imageViewStreakFreezerIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MenuPrincipal.this)
+                        .setTitle("Comprar Congelador de Racha")
+                        .setMessage("¿Quieres comprar un congelador de racha por " + COSTO_CONGELADOR + " puntos?")
+                        .setPositiveButton("Comprar", (dialog, which) -> {
+                            // Intentar restar puntos
+                            if (GestorDeRachas.restarPuntos(MenuPrincipal.this, COSTO_CONGELADOR)) {
+                                GestorDeRachas.añadirCongeladores(MenuPrincipal.this, 1);
+                                actualizarVisualizacionRacha(); // Refrescar la UI
+                                Toast.makeText(MenuPrincipal.this, "¡Congelador comprado! Te quedan " + GestorDeRachas.getCantidadPuntos(MenuPrincipal.this) + " puntos.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MenuPrincipal.this, "¡Puntos insuficientes! Necesitas " + COSTO_CONGELADOR + " puntos para comprar un congelador.", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        });
+
+        imageViewPointsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GestorDeRachas.sumarPuntos(MenuPrincipal.this, 10);
+                actualizarVisualizacionRacha(); // Refrescar la UI
+                Toast.makeText(MenuPrincipal.this, "¡Añadidos 10 puntos!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        actualizarVisualizacionRacha();
     }
 
     private void showPopupMenu(View view) {
@@ -123,77 +172,140 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
         });
     }
 
-    private void cargarRutinas() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+    public static void cargarRutinas(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString(KEY_RUTINAS, null);
 
         if (json != null) {
             Type type = new TypeToken<ArrayList<Rutina>>() {}.getType();
             listaRutinas = gson.fromJson(json, type);
-            // Asegurarse de que el proximoId se actualice correctamente después de cargar
-            // para evitar IDs duplicados al crear nuevas rutinas.
             int maxId = 0;
             for (Rutina r : listaRutinas) {
                 if (r.getId() > maxId) {
                     maxId = r.getId();
                 }
             }
-            Rutina.setProximoId(maxId + 1); // Establecer el próximo ID disponible
+            Rutina.setProximoId(maxId + 1);
         } else {
             listaRutinas = new ArrayList<>();
-            cargarInformacionInicialSiEsNecesario(); // Cargar datos iniciales solo si no hay datos guardados
+            cargarInformacionInicialSiEsNecesario(context);
         }
     }
 
-    private void guardarRutinas() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+    public static void guardarRutinas(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(listaRutinas);
         editor.putString(KEY_RUTINAS, json);
         editor.apply();
+        Log.d("MenuPrincipal", "Rutinas guardadas localmente.");
     }
 
-    public void cargarInformacionInicialSiEsNecesario() {
-        // Esta función ahora solo se llamará si no hay datos guardados previamente.
-        // Se mantiene la lógica de inicialización.
+    public static void cargarInformacionInicialSiEsNecesario(Context context) {
+        Rutina.setProximoId(1);
+
         ArrayList<Actividad> acts1 = new ArrayList<>();
-        acts1.add(new Actividad("Correr 30 min", true));
+        acts1.add(new Actividad("Correr 30 min", false));
         acts1.add(new Actividad("Estiramientos", false));
-        Rutina r1 = new Rutina(0, "Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio", true, "07:00", "¡Hora de empezar el día con energía!", Arrays.asList(Calendar.MONDAY, Calendar.WEDNESDAY, Calendar.FRIDAY));
+        Rutina r1 = new Rutina("Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio");
+        r1.setRecordatorioActivo(true);
+        r1.setHoraRecordatorio("07:00");
+        r1.setTextoRecordatorioPersonalizado("¡Hora de empezar el día con energía!");
+        r1.setDiasSemana(Arrays.asList(Calendar.MONDAY, Calendar.WEDNESDAY, Calendar.FRIDAY));
         listaRutinas.add(r1);
 
         ArrayList<Actividad> acts2 = new ArrayList<>();
-        acts2.add(new Actividad("Leer capítulo Android", true));
-        Rutina r2 = new Rutina(0, "Estudio Tarde", "04/06/2025", acts2, "Educación", false, "", "", new ArrayList<Integer>());
+        acts2.add(new Actividad("Leer capítulo Android", false));
+        Rutina r2 = new Rutina("Estudio Tarde", "04/06/2025", acts2, "Educación");
+        r2.setRecordatorioActivo(false);
         listaRutinas.add(r2);
 
         ArrayList<Actividad> acts3 = new ArrayList<>();
-        acts3.add(new Actividad("Lavar platos"));
-        acts3.add(new Actividad("Ordenar habitación", true));
-        Rutina r3 = new Rutina(0, "Tareas Hogar", "04/06/2025", acts3, "Hogar", true, "18:30", "", Arrays.asList(Calendar.SATURDAY, Calendar.SUNDAY));
+        acts3.add(new Actividad("Lavar platos", false));
+        acts3.add(new Actividad("Ordenar habitación", false));
+        Rutina r3 = new Rutina("Tareas Hogar", "04/06/2025", acts3, "Hogar");
+        r3.setRecordatorioActivo(true);
+        r3.setHoraRecordatorio("18:30");
+        r3.setTextoRecordatorioPersonalizado("");
+        r3.setDiasSemana(Arrays.asList(Calendar.SATURDAY, Calendar.SUNDAY));
         listaRutinas.add(r3);
 
-        // Guardar las rutinas iniciales después de cargarlas por primera vez
-        guardarRutinas();
+        guardarRutinas(context);
+        Log.d("MenuPrincipal", "Información inicial cargada y guardada.");
     }
+
+    public static void marcarRutinaComoCompletadaYGuardar(Context context, int rutinaId) {
+        if (listaRutinas == null) {
+            cargarRutinas(context);
+        }
+
+        Rutina rutinaToUpdate = null;
+        for (Rutina r : listaRutinas) {
+            if (r.getId() == rutinaId) {
+                rutinaToUpdate = r;
+                break;
+            }
+        }
+
+        if (rutinaToUpdate != null) {
+            boolean allActivitiesAlreadyCompleted = rutinaToUpdate.todasActividadesCompletadas();
+
+            if (rutinaToUpdate.getActividades() != null && !rutinaToUpdate.getActividades().isEmpty()) {
+                for (Actividad actividad : rutinaToUpdate.getActividades()) {
+                    actividad.setCompletada(true);
+                }
+            } else {
+                Log.d("MenuPrincipal", "Rutina " + rutinaToUpdate.getNombre() + " no tiene actividades, se considera completada.");
+            }
+
+            guardarRutinas(context);
+
+            if (!allActivitiesAlreadyCompleted && rutinaToUpdate.todasActividadesCompletadas()) {
+                GestorDeRachas.rutinaCompletadaHoy(context);
+                GestorDeRachas.sumarPuntos(context, 10); // Sumar 10 puntos por completar una rutina
+                Log.d("MenuPrincipal", "GestorDeRachas llamado desde acción de notificación para: " + rutinaToUpdate.getNombre());
+            }
+
+        } else {
+            Log.e("MenuPrincipal", "Rutina con ID " + rutinaId + " no encontrada para marcar como completada.");
+        }
+    }
+
+    private void actualizarVisualizacionRacha() {
+        SharedPreferences prefs = getSharedPreferences(GestorDeRachas.PREFS_RACHAS_NAME, MODE_PRIVATE);
+
+        int rachaActual = prefs.getInt(GestorDeRachas.KEY_CONTADOR_RACHA_ACTUAL, 0);
+        textViewStreakCount.setText(String.valueOf(rachaActual));
+
+        int congeladoresActuales = GestorDeRachas.getCantidadCongeladores(this);
+        textViewStreakFreezerCount.setText(String.valueOf(congeladoresActuales));
+
+        int puntosActuales = GestorDeRachas.getCantidadPuntos(this);
+        textViewPointsCount.setText(String.valueOf(puntosActuales));
+
+        // Lógica para cambiar el icono de la racha (ya implementado)
+        if (rachaActual == 0) {
+            imageViewStreakIcon.setImageResource(R.drawable.ic_notflame_pomodoro);
+        } else {
+            imageViewStreakIcon.setImageResource(R.drawable.ic_flame_pomodoro);
+        }
+    }
+
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Guardar rutinas cada vez que la actividad está a punto de dejar de ser visible
-        guardarRutinas();
+        guardarRutinas(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Cuando se regresa a esta actividad, refrescar la lista.
-        // Los datos ya deberían estar cargados por cargarRutinas() en onCreate
-        // o por la actualización de CrearaRutina, DetalleRutina, etc.
         if (adaptadorRutinasObj != null) {
             adaptadorRutinasObj.notifyDataSetChanged();
         }
+        actualizarVisualizacionRacha();
     }
 }
