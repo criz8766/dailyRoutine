@@ -19,115 +19,149 @@
             android:id="@+id/toolbar_menu_principal"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title=" "
-            app:contentInsetStartWithNavigation="0dp">
+            app:contentInsetEnd="0dp"
+            app:contentInsetStart="0dp"
+            app:title=" ">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
+                android:paddingStart="16dp"
                 android:paddingEnd="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardview_avatar_menu"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imageview_avatar_menu"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Avatar del usuario"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/perfil" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/layout_iconos_derecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/imageViewStreakIconContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageViewStreakIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_flame_pomodoro" />
+
+                        <TextView
+                            android:id="@+id/textViewStreakCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="0"
+                            android:textColor="@color/pomodoro_red"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutStreakFreezer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageViewStreakFreezerIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_snowflake_pomodoro" />
+
+                        <TextView
+                            android:id="@+id/textViewStreakFreezerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="0"
+                            android:textColor="@color/pomodoro_text_dark"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageViewPointsIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_coin_pomodoro" />
+
+                        <TextView
+                            android:id="@+id/textViewPointsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="0"
+                            android:textColor="@color/pomodoro_red"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/botonOpcionesMenu"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Más opciones"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_dots_vertical_pomodoro"
+                        app:tint="@color/pomodoro_text_dark" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textViewTituloMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Mis Rutinas"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:gravity="center"
                     android:textColor="@color/pomodoro_red"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="16dp" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/layout_iconos_derecha"
+                    app:layout_constraintStart_toEndOf="@+id/cardview_avatar_menu"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Bienvenido, Usuario" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginEnd="8dp">
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <ImageView
-                        android:id="@+id/imageViewStreakIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_flame_pomodoro"
-                        android:contentDescription="Icono de racha" />
-
-                    <TextView
-                        android:id="@+id/textViewStreakCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/pomodoro_red"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginStart="4dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutStreakFreezer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewStreakFreezerIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_snowflake_pomodoro"
-                        android:contentDescription="Icono de congelador de racha" />
-
-                    <TextView
-                        android:id="@+id/textViewStreakFreezerCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/pomodoro_text_dark"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginStart="4dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutPoints"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageViewPointsIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_coin_pomodoro"
-                        android:contentDescription="Icono de puntos/monedas" />
-
-                    <TextView
-                        android:id="@+id/textViewPointsCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="@color/pomodoro_red"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginStart="4dp" />
-                </LinearLayout>
-
-
-                <ImageButton
-                    android:id="@+id/botonOpcionesMenu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_dots_vertical_pomodoro"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Más opciones"
-                    android:padding="6dp"
-                    app:tint="@color/pomodoro_text_dark" />
-            </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -141,19 +175,29 @@
             android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/pomodoro_border_light"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="@color/pomodoro_border_light" />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchview_rutinas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/edittext_pomodoro_bg"
+            app:iconifiedByDefault="false"
+            app:queryHint="Buscar por categoría..."
+            app:theme="@style/AppTheme.SearchView" />
 
         <ListView
             android:id="@+id/listaRutinas"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="8dp"
+            android:clipToPadding="false"
             android:divider="@android:color/transparent"
             android:dividerHeight="8dp"
-            android:clipToPadding="false" />
+            android:padding="8dp" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -162,11 +206,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add_pomodoro"
         android:contentDescription="Añadir Rutina"
         app:backgroundTint="@color/pomodoro_red"
-        app:tint="@color/white"
         app:elevation="6dp"
-        app:pressedTranslationZ="12dp"/>
+        app:pressedTranslationZ="12dp"
+        app:srcCompat="@drawable/ic_add_pomodoro"
+        app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

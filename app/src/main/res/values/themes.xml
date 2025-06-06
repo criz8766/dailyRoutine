@@ -7,8 +7,13 @@
         <item name="colorPrimary">@color/rojo</item>
         <item name="colorSecondary">@color/verde</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/white</item> </style>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
 
+    <style name="AppTheme.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:editTextColor">@color/pomodoro_text_dark</item>
+        <item name="android:textColorHint">@color/pomodoro_text_light</item>
+    </style>
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
         <item name="background">@color/rojo</item>
         <item name="titleTextStyle">@style/ActionBar.TitleText</item>

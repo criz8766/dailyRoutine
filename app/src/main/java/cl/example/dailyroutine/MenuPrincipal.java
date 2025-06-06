@@ -3,6 +3,7 @@ package cl.example.dailyroutine;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,16 +13,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.PopupMenu;
+
 import androidx.appcompat.app.AlertDialog;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.SearchView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,12 +41,15 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
 
     private FloatingActionButton fabAnadirRutina;
     private ImageButton botonOpcionesMenu;
+    private ImageView imageViewAvatarMenu;
+    private TextView textViewTituloMenu;
     private TextView textViewStreakCount;
     private ImageView imageViewStreakIcon;
     private TextView textViewStreakFreezerCount;
     private ImageView imageViewStreakFreezerIcon;
     private TextView textViewPointsCount;
     private ImageView imageViewPointsIcon;
+    private SearchView searchViewRutinas;
     private static final int COSTO_CONGELADOR = 50;
 
     private FirebaseAuth mAuth;
@@ -76,13 +81,31 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
 
         fabAnadirRutina = findViewById(R.id.fabAnadirRutina);
         botonOpcionesMenu = findViewById(R.id.botonOpcionesMenu);
+        imageViewAvatarMenu = findViewById(R.id.imageview_avatar_menu);
+        textViewTituloMenu = findViewById(R.id.textViewTituloMenu);
         textViewStreakCount = findViewById(R.id.textViewStreakCount);
         imageViewStreakIcon = findViewById(R.id.imageViewStreakIcon);
         textViewStreakFreezerCount = findViewById(R.id.textViewStreakFreezerCount);
         imageViewStreakFreezerIcon = findViewById(R.id.imageViewStreakFreezerIcon);
         textViewPointsCount = findViewById(R.id.textViewPointsCount);
         imageViewPointsIcon = findViewById(R.id.imageViewPointsIcon);
+        searchViewRutinas = findViewById(R.id.searchview_rutinas);
 
+
+        searchViewRutinas.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adaptadorRutinasObj != null) {
+                    adaptadorRutinasObj.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
 
         fabAnadirRutina.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,10 +128,9 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
                         .setTitle("Comprar Congelador de Racha")
                         .setMessage("¿Quieres comprar un congelador de racha por " + COSTO_CONGELADOR + " puntos?")
                         .setPositiveButton("Comprar", (dialog, which) -> {
-                            // Intentar restar puntos
                             if (GestorDeRachas.restarPuntos(MenuPrincipal.this, COSTO_CONGELADOR)) {
                                 GestorDeRachas.añadirCongeladores(MenuPrincipal.this, 1);
-                                actualizarVisualizacionRacha(); // Refrescar la UI
+                                actualizarVisualizacionRacha();
                                 Toast.makeText(MenuPrincipal.this, "¡Congelador comprado! Te quedan " + GestorDeRachas.getCantidadPuntos(MenuPrincipal.this) + " puntos.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(MenuPrincipal.this, "¡Puntos insuficientes! Necesitas " + COSTO_CONGELADOR + " puntos para comprar un congelador.", Toast.LENGTH_LONG).show();
@@ -123,14 +145,37 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
             @Override
             public void onClick(View v) {
                 GestorDeRachas.sumarPuntos(MenuPrincipal.this, 10);
-                actualizarVisualizacionRacha(); // Refrescar la UI
+                actualizarVisualizacionRacha();
                 Toast.makeText(MenuPrincipal.this, "¡Añadidos 10 puntos!", Toast.LENGTH_SHORT).show();
             }
         });
 
-
         actualizarVisualizacionRacha();
+        cargarDatosPerfil();
     }
+
+    private void cargarDatosPerfil() {
+        SharedPreferences prefs = getSharedPreferences("PreferenciasPerfil", Context.MODE_PRIVATE);
+
+        String nombrePantalla = prefs.getString("nombrePantalla", "");
+        if (nombrePantalla.isEmpty()) {
+            textViewTituloMenu.setText("Mis Rutinas");
+        } else {
+            textViewTituloMenu.setText("¡Hola, " + nombrePantalla + "!");
+        }
+
+        String avatarUriString = prefs.getString("avatarUri", null);
+        if (avatarUriString != null) {
+            try {
+                imageViewAvatarMenu.setImageURI(Uri.parse(avatarUriString));
+            } catch (Exception e) {
+                imageViewAvatarMenu.setImageResource(R.drawable.perfil);
+            }
+        } else {
+            imageViewAvatarMenu.setImageResource(R.drawable.perfil);
+        }
+    }
+
 
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
@@ -149,6 +194,9 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
             return true;
         } else if (itemId == R.id.menu_opcion_historial) {
             startActivity(new Intent(MenuPrincipal.this, HistorialActivity.class));
+            return true;
+        } else if (itemId == R.id.menu_opcion_estadisticas) {
+            startActivity(new Intent(MenuPrincipal.this, EstadisticasActivity.class));
             return true;
         } else if (itemId == R.id.menu_opcion_rutinas_famosas) {
             startActivity(new Intent(MenuPrincipal.this, RutinasFamosasActivity.class));
@@ -181,9 +229,11 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
             Type type = new TypeToken<ArrayList<Rutina>>() {}.getType();
             listaRutinas = gson.fromJson(json, type);
             int maxId = 0;
-            for (Rutina r : listaRutinas) {
-                if (r.getId() > maxId) {
-                    maxId = r.getId();
+            if (listaRutinas != null) {
+                for (Rutina r : listaRutinas) {
+                    if (r.getId() > maxId) {
+                        maxId = r.getId();
+                    }
                 }
             }
             Rutina.setProximoId(maxId + 1);
@@ -194,46 +244,50 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
     }
 
     public static void guardarRutinas(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(listaRutinas);
-        editor.putString(KEY_RUTINAS, json);
-        editor.apply();
-        Log.d("MenuPrincipal", "Rutinas guardadas localmente.");
+        if (listaRutinas != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(listaRutinas);
+            editor.putString(KEY_RUTINAS, json);
+            editor.apply();
+            Log.d("MenuPrincipal", "Rutinas guardadas localmente.");
+        }
     }
 
     public static void cargarInformacionInicialSiEsNecesario(Context context) {
-        Rutina.setProximoId(1);
+        if (listaRutinas != null && listaRutinas.isEmpty()) {
+            Rutina.setProximoId(1);
 
-        ArrayList<Actividad> acts1 = new ArrayList<>();
-        acts1.add(new Actividad("Correr 30 min", false));
-        acts1.add(new Actividad("Estiramientos", false));
-        Rutina r1 = new Rutina("Entrenamiento Mañana", "03/06/2025", acts1, "Ejercicio");
-        r1.setRecordatorioActivo(true);
-        r1.setHoraRecordatorio("07:00");
-        r1.setTextoRecordatorioPersonalizado("¡Hora de empezar el día con energía!");
-        r1.setDiasSemana(Arrays.asList(Calendar.MONDAY, Calendar.WEDNESDAY, Calendar.FRIDAY));
-        listaRutinas.add(r1);
+            ArrayList<Actividad> acts1 = new ArrayList<>();
+            acts1.add(new Actividad("Correr 30 min", false));
+            acts1.add(new Actividad("Estiramientos", false));
+            Rutina r1 = new Rutina("Entrenamiento Mañana", "07/06/2025", acts1, "Ejercicio");
+            r1.setRecordatorioActivo(true);
+            r1.setHoraRecordatorio("07:00");
+            r1.setTextoRecordatorioPersonalizado("¡Hora de empezar el día con energía!");
+            r1.setDiasSemana(Arrays.asList(Calendar.MONDAY, Calendar.WEDNESDAY, Calendar.FRIDAY));
+            listaRutinas.add(r1);
 
-        ArrayList<Actividad> acts2 = new ArrayList<>();
-        acts2.add(new Actividad("Leer capítulo Android", false));
-        Rutina r2 = new Rutina("Estudio Tarde", "04/06/2025", acts2, "Educación");
-        r2.setRecordatorioActivo(false);
-        listaRutinas.add(r2);
+            ArrayList<Actividad> acts2 = new ArrayList<>();
+            acts2.add(new Actividad("Leer capítulo Android", false));
+            Rutina r2 = new Rutina("Estudio Tarde", "07/06/2025", acts2, "Educación");
+            r2.setRecordatorioActivo(false);
+            listaRutinas.add(r2);
 
-        ArrayList<Actividad> acts3 = new ArrayList<>();
-        acts3.add(new Actividad("Lavar platos", false));
-        acts3.add(new Actividad("Ordenar habitación", false));
-        Rutina r3 = new Rutina("Tareas Hogar", "04/06/2025", acts3, "Hogar");
-        r3.setRecordatorioActivo(true);
-        r3.setHoraRecordatorio("18:30");
-        r3.setTextoRecordatorioPersonalizado("");
-        r3.setDiasSemana(Arrays.asList(Calendar.SATURDAY, Calendar.SUNDAY));
-        listaRutinas.add(r3);
+            ArrayList<Actividad> acts3 = new ArrayList<>();
+            acts3.add(new Actividad("Lavar platos", false));
+            acts3.add(new Actividad("Ordenar habitación", false));
+            Rutina r3 = new Rutina("Tareas Hogar", "07/06/2025", acts3, "Hogar");
+            r3.setRecordatorioActivo(true);
+            r3.setHoraRecordatorio("18:30");
+            r3.setTextoRecordatorioPersonalizado("");
+            r3.setDiasSemana(Arrays.asList(Calendar.SATURDAY, Calendar.SUNDAY));
+            listaRutinas.add(r3);
 
-        guardarRutinas(context);
-        Log.d("MenuPrincipal", "Información inicial cargada y guardada.");
+            guardarRutinas(context);
+            Log.d("MenuPrincipal", "Información inicial cargada y guardada.");
+        }
     }
 
     public static void marcarRutinaComoCompletadaYGuardar(Context context, int rutinaId) {
@@ -242,10 +296,12 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
         }
 
         Rutina rutinaToUpdate = null;
-        for (Rutina r : listaRutinas) {
-            if (r.getId() == rutinaId) {
-                rutinaToUpdate = r;
-                break;
+        if (listaRutinas != null) {
+            for (Rutina r : listaRutinas) {
+                if (r.getId() == rutinaId) {
+                    rutinaToUpdate = r;
+                    break;
+                }
             }
         }
 
@@ -264,7 +320,7 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
 
             if (!allActivitiesAlreadyCompleted && rutinaToUpdate.todasActividadesCompletadas()) {
                 GestorDeRachas.rutinaCompletadaHoy(context);
-                GestorDeRachas.sumarPuntos(context, 10); // Sumar 10 puntos por completar una rutina
+                GestorDeRachas.sumarPuntos(context, 10);
                 Log.d("MenuPrincipal", "GestorDeRachas llamado desde acción de notificación para: " + rutinaToUpdate.getNombre());
             }
 
@@ -285,7 +341,6 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
         int puntosActuales = GestorDeRachas.getCantidadPuntos(this);
         textViewPointsCount.setText(String.valueOf(puntosActuales));
 
-        // Lógica para cambiar el icono de la racha (ya implementado)
         if (rachaActual == 0) {
             imageViewStreakIcon.setImageResource(R.drawable.ic_notflame_pomodoro);
         } else {
@@ -304,8 +359,10 @@ public class MenuPrincipal extends AppCompatActivity implements PopupMenu.OnMenu
     protected void onResume() {
         super.onResume();
         if (adaptadorRutinasObj != null) {
+            adaptadorRutinasObj.getFilter().filter(searchViewRutinas.getQuery());
             adaptadorRutinasObj.notifyDataSetChanged();
         }
         actualizarVisualizacionRacha();
+        cargarDatosPerfil();
     }
 }

@@ -229,7 +229,7 @@
             android:paddingTop="14dp"
             android:paddingBottom="14dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/button_pomodoro_primary_bg"/>
+            app:backgroundTint="@color/pomodoro_green_confirm"/>
 
         <Button
             android:id="@+id/botonEliminarRutina"
@@ -242,7 +242,7 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/button_pomodoro_danger_bg"
+            app:backgroundTint="@color/rojo"
             android:visibility="gone"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

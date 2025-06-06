@@ -77,12 +77,13 @@
                 android:id="@+id/edittext_nombre_pantalla_perfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tu nombre visible"
+                android:hint="Tu nombre visible (max 10 caracteres)"
                 android:textColor="@color/pomodoro_text_dark"
                 android:textColorHint="@color/pomodoro_text_light"
                 android:background="@drawable/edittext_pomodoro_bg"
                 android:inputType="textPersonName|textCapWords"
                 android:maxLines="1"
+                android:maxLength="12"
                 android:layout_marginBottom="32dp"/>
 
             <Button
@@ -90,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Guardar Cambios"
-                android:background="@drawable/button_pomodoro_positive_bg"
+                app:backgroundTint="@color/pomodoro_green_confirm"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"

@@ -15,6 +15,12 @@
         app:iconTint="@color/pomodoro_text_dark" />
 
     <item
+        android:id="@+id/menu_opcion_estadisticas"
+        android:title="Estadísticas"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        app:iconTint="@color/pomodoro_text_dark" />
+
+    <item
         android:id="@+id/menu_opcion_rutinas_famosas"
         android:title="Rutinas Populares"
         android:icon="@android:drawable/ic_menu_compass"

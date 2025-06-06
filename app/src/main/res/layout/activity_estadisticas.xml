@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/pomodoro_cream_background"
+    tools:context=".EstadisticasActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_estadisticas"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/pomodoro_red"
+        app:title="Mis Estadísticas"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resumen General"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/pomodoro_red"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tv_tasa_cumplimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tasa de Cumplimiento (7 días): N/A"
+                android:textSize="18sp"
+                android:textColor="@color/pomodoro_text_dark"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_total_completadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total de Rutinas Completadas: 0"
+                android:textSize="18sp"
+                android:textColor="@color/pomodoro_text_dark"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calendario de Actividad"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/pomodoro_red"
+                android:layout_marginBottom="16dp"/>
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendar_view_estadisticas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:mcv_selectionColor="@color/pomodoro_red"
+                app:mcv_showOtherDates="all"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
